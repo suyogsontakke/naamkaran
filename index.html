@@ -47,17 +47,18 @@
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
     "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
     "html2canvas": "https://esm.sh/html2canvas@1.4.1",
+    "firebase/": "https://esm.sh/firebase@^12.7.0/",
     "express": "https://esm.sh/express@^5.2.1",
-    "dotenv": "https://esm.sh/dotenv@^17.2.3",
     "cors": "https://esm.sh/cors@^2.8.5",
     "nodemailer": "https://esm.sh/nodemailer@^7.0.12",
-    "firebase/": "https://esm.sh/firebase@^12.7.0/"
+    "dotenv": "https://esm.sh/dotenv@^17.2.3"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/frontend/index.tsx"></script>
+    <!-- Pointing directly to index.tsx for Vercel/Vite standard -->
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>

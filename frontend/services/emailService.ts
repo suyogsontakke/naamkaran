@@ -6,13 +6,12 @@ export interface EmailResponse {
 
 export const emailService = {
   /**
-   * Sends the invitation image to the backend for emailing.
+   * Sends the invitation image to the serverless backend.
    */
   sendInvitation: async (email: string, guestName: string, imageBase64: string): Promise<EmailResponse> => {
     try {
-      // Assuming backend runs on localhost:3001
-      // In production, this URL would be an environment variable or relative path
-      const response = await fetch('http://localhost:3001/api/send-invite', {
+      // Points to relative path /api/send-invite which Vercel handles
+      const response = await fetch('/api/send-invite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,7 +30,7 @@ export const emailService = {
       return await response.json();
     } catch (error) {
       console.error("Email service error:", error);
-      return { success: false, message: "Failed to connect to email server. Make sure backend is running on port 3001." };
+      return { success: false, message: "Failed to connect to email server. Ensure Vercel environment variables are set." };
     }
   }
 };
