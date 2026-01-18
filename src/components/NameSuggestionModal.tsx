@@ -319,3 +319,4 @@ export const NameSuggestionModal: React.FC<NameSuggestionModalProps> = ({ onClos
       </motion.div>
     </motion.div>
   );
+  };
