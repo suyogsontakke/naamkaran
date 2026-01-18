@@ -1,3 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Your other custom CSS can go below here */
+body {
+  margin: 0;
+  background-color: #1a1a1a; /* Dark background default */
+}
+
 * {
   margin: 0;
   padding: 0;
