@@ -124,7 +124,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 initial="hidden"
                 animate={showDetails ? "visible" : "hidden"}
             >
-                <motion.h3 variants={fadeVariants} className="text-amber-600 tracking-[0.2em] text-[10px] md:text-xs uppercase font-bold">The Dabhade Family</motion.h3>
+                <motion.h3 variants={fadeVariants} className="text-amber-600 tracking-[0.2em] text-[10px] md:text-xs uppercase font-bold">The Dabhade & Shimpi Family</motion.h3>
                 <motion.div variants={fadeVariants} className="w-12 h-0.5 bg-amber-300 mx-auto"></motion.div>
                 <motion.p variants={fadeVariants} className="text-xs md:text-sm italic text-gray-500">Cordially invites</motion.p>
                 
@@ -213,7 +213,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                     <div>
                         <p className="text-[10px] text-gray-500 uppercase font-bold">Date</p>
-                        <p className="text-xs md:text-sm font-semibold text-slate-700">Sun, Feb 14th, 2026</p>
+                        <p className="text-xs md:text-sm font-semibold text-slate-700">Sun, Feb 15th, 2026</p>
                     </div>
                 </motion.div>
                 <motion.div variants={itemVariants} className="flex items-center gap-3 text-left">
@@ -222,7 +222,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                     <div>
                         <p className="text-[10px] text-gray-500 uppercase font-bold">Time</p>
-                        <p className="text-xs md:text-sm font-semibold text-slate-700">5:30 PM Onwards</p>
+                        <p className="text-xs md:text-sm font-semibold text-slate-700">12:30 PM Onwards</p>
                     </div>
                 </motion.div>
                 
