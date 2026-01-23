@@ -5,7 +5,6 @@ import { Envelope3D } from './components/Envelope3D';
 import { FloatingPetals } from './components/FloatingPetals';
 import { ThreeDElements } from './components/ThreeDElements';
 import { PhotoGallery } from './components/PhotoGallery';
-import { NameSuggestionModal } from './components/NameSuggestionModal';
 import { MapModal } from './components/MapModal';
 import { Confetti } from './components/Confetti';
 import { Volume2, VolumeX } from 'lucide-react';
@@ -13,7 +12,6 @@ import { Volume2, VolumeX } from 'lucide-react';
 const App: React.FC = () => {
   const [guestName, setGuestName] = useState<string | null>(null);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [isSuggestionOpen, setIsSuggestionOpen] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   
@@ -23,14 +21,11 @@ const App: React.FC = () => {
 
   // Initialize Audio
   useEffect(() => {
-    // NOTE: To use a local file:
-    // 1. Place your 'chant.mp3' or 'music.mp3' in the public/root folder of your project.
-    // 2. Change the URL below to: './your-audio-filename.mp3'
     const audioUrl = 'https://cdn.pixabay.com/download/audio/2022/02/07/audio_18bf8f6b04.mp3?filename=indian-meditation-flute-18049.mp3';
     
     audioRef.current = new Audio(audioUrl);
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.4; // Set initial volume (0.0 to 1.0)
+    audioRef.current.volume = 0.4;
 
     return () => {
       if (audioRef.current) {
@@ -45,7 +40,6 @@ const App: React.FC = () => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
-        // Browsers require user interaction to play audio
         audioRef.current.play().catch(error => {
           console.log("Audio play failed (browser policy):", error);
         });
@@ -56,13 +50,10 @@ const App: React.FC = () => {
 
   const handleNameSubmit = (name: string) => {
     setGuestName(name);
-    // Optional: Auto-start music on name submit if acceptable by browser policy
-    // toggleMusic(); 
   };
 
   const triggerConfetti = useCallback(() => {
     setShowConfetti(true);
-    // Reset confetti after animation duration (approx 5s)
     const timer = setTimeout(() => {
         setShowConfetti(false);
     }, 5000);
@@ -71,10 +62,8 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-[100dvh] w-full bg-[#0f172a] relative overflow-hidden flex flex-col items-center justify-center">
-      {/* Dynamic Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-black z-0"></div>
       
-      {/* 3D Floor Grid Effect */}
       <div className="absolute inset-0 opacity-20 z-0" 
            style={{ 
              backgroundImage: 'linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px)', 
@@ -86,11 +75,8 @@ const App: React.FC = () => {
       <FloatingPetals />
       <ThreeDElements />
       
-      {/* Confetti Overlay */}
       {showConfetti && <Confetti />}
 
-      {/* Main Content Area */}
-      {/* Updated to fully center content on all screens */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center min-h-[100dvh]">
         
         <AnimatePresence mode="wait">
@@ -115,12 +101,10 @@ const App: React.FC = () => {
                  </motion.h2>
               </div>
 
-              {/* Envelope Container: Centered vertically */}
               <div className="relative z-30">
                  <Envelope3D 
                     guestName={guestName} 
                     onOpenGallery={() => setIsGalleryOpen(true)}
-                    onOpenSuggestions={() => setIsSuggestionOpen(true)}
                     onOpenMap={() => setIsMapOpen(true)}
                     onOpenComplete={triggerConfetti}
                  />
@@ -151,21 +135,11 @@ const App: React.FC = () => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {isSuggestionOpen && (
-            <NameSuggestionModal 
-                onClose={() => setIsSuggestionOpen(false)} 
-                onSuccess={triggerConfetti}
-            />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
         {isMapOpen && (
             <MapModal onClose={() => setIsMapOpen(false)} />
         )}
       </AnimatePresence>
 
-      {/* Audio Control */}
       <div className="absolute top-4 right-4 z-50">
         <button 
           onClick={toggleMusic}
