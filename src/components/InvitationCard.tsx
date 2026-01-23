@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2 } from 'lucide-react';
-import html2canvas from 'html2canvas';
+// IMPORT YOUR IMAGE HERE
+// Make sure the file name matches exactly (invite.png or invite.jpg)
+import inviteImage from '../photos/invite.jpg'; 
 
 interface InvitationCardProps {
   guestName: string;
@@ -11,7 +13,6 @@ interface InvitationCardProps {
 }
 
 export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenMap, showDetails = true }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
 
   // Variants definitions
@@ -75,75 +76,26 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     visible: { opacity: 1, transition: { duration: 1, delay: 0.2 } }
   };
 
-  const generateCardImage = async (): Promise<string | null> => {
-    if (!cardRef.current) return null;
-    
-    // Brief delay to ensure UI stability
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    try {
-        const canvas = await html2canvas(cardRef.current, {
-            scale: 3, // High resolution for professional print quality
-            useCORS: true,
-            backgroundColor: '#fffcf5', 
-            logging: false,
-            onclone: (clonedDoc) => {
-                const clonedCard = clonedDoc.querySelector('[data-card-root]') as HTMLElement;
-                if (clonedCard) {
-                    clonedCard.style.height = 'auto';
-                    clonedCard.style.overflow = 'visible';
-                    clonedCard.style.maxHeight = 'none';
-                    clonedCard.style.position = 'relative';
-                    clonedCard.classList.remove('overflow-y-auto', 'custom-scrollbar');
-                    clonedCard.style.paddingBottom = '60px'; 
-                    clonedCard.style.transform = 'none';
-                }
-                
-                const elementsToHide = clonedDoc.querySelectorAll('[data-hide-download]');
-                elementsToHide.forEach((el) => {
-                    (el as HTMLElement).style.display = 'none';
-                });
-
-                const gradientTexts = clonedDoc.querySelectorAll('.text-transparent, .bg-clip-text');
-                gradientTexts.forEach((el) => {
-                     const htmlEl = el as HTMLElement;
-                     htmlEl.classList.remove('text-transparent', 'bg-clip-text');
-                     htmlEl.style.color = '#d97706'; 
-                     htmlEl.style.webkitTextFillColor = '#d97706';
-                     htmlEl.style.backgroundImage = 'none';
-                });
-            }
-        });
-        return canvas.toDataURL('image/png');
-    } catch (error) {
-        console.error("Image generation failed:", error);
-        return null;
-    }
-  };
-
-  const handleDownload = async (e: React.MouseEvent) => {
+  // UPDATED: Direct File Download Logic
+  const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (isDownloading) return;
-
     setIsDownloading(true);
-    try {
-        const dataUrl = await generateCardImage();
-        if (dataUrl) {
-            const link = document.createElement('a');
-            link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-')}.png`;
-            link.href = dataUrl;
-            link.click();
-        }
-    } finally {
-        setIsDownloading(false);
-    }
+
+    // Create a temporary link to download the imported image
+    const link = document.createElement('a');
+    link.href = inviteImage;
+    link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Reset loading state after a brief delay
+    setTimeout(() => setIsDownloading(false), 1000);
   };
 
   return (
     <>
         <div 
-            ref={cardRef}
-            data-card-root
             className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center p-4 md:p-6 border-[8px] md:border-[12px] border-double border-amber-200 relative overflow-y-auto custom-scrollbar transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl origin-center"
         >
         <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
@@ -165,7 +117,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 initial="hidden"
                 animate={showDetails ? "visible" : "hidden"}
             >
-                <motion.h3 variants={fadeVariants} className="text-amber-600 tracking-[0.2em] text-[10px] md:text-xs uppercase font-bold">The Dabhade & Shimpi Family</motion.h3>
+                <motion.h3 variants={fadeVariants} className="text-amber-600 tracking-[0.2em] text-[10px] md:text-xs uppercase font-bold">The Dabhade Family</motion.h3>
                 <motion.div variants={fadeVariants} className="w-12 h-0.5 bg-amber-300 mx-auto"></motion.div>
                 <motion.p variants={fadeVariants} className="text-xs md:text-sm italic text-gray-500">Cordially invites</motion.p>
                 
@@ -188,13 +140,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     >
                         {guestName}
                     </h2>
-                    <div 
-                        data-hide-download
-                        className="absolute inset-0 text-2xl md:text-3xl font-['Great_Vibes'] text-transparent bg-clip-text bg-gradient-to-t from-transparent via-white/40 to-white/60 leading-tight pointer-events-none py-1"
-                        aria-hidden="true"
-                    >
-                        {guestName}
-                    </div>
                 </motion.div>
                 
                 <motion.span variants={fadeVariants} className="text-xs md:text-sm font-serif text-gray-500 block">- with Family -</motion.span>
@@ -237,13 +182,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     >
                         Baby Boy
                     </h1>
-                    <div 
-                        data-hide-download
-                        className="absolute inset-0 text-4xl md:text-6xl font-['Cinzel'] font-black text-transparent bg-clip-text bg-gradient-to-t from-amber-600/20 to-white/50 leading-none tracking-wide pointer-events-none py-2"
-                        aria-hidden="true"
-                    >
-                        Baby Boy
-                    </div>
                 </motion.div>
                 
                 <motion.p 
@@ -268,7 +206,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                     <div>
                         <p className="text-[10px] text-gray-500 uppercase font-bold">Date</p>
-                        <p className="text-xs md:text-sm font-semibold text-slate-700">Sun, Feb 15th, 2026</p>
+                        <p className="text-xs md:text-sm font-semibold text-slate-700">Sun, Feb 14th, 2026</p>
                     </div>
                 </motion.div>
                 <motion.div variants={itemVariants} className="flex items-center gap-3 text-left">
@@ -277,7 +215,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                     <div>
                         <p className="text-[10px] text-gray-500 uppercase font-bold">Time</p>
-                        <p className="text-xs md:text-sm font-semibold text-slate-700">12:30 PM Onwards</p>
+                        <p className="text-xs md:text-sm font-semibold text-slate-700">5:30 PM Onwards</p>
                     </div>
                 </motion.div>
                 
@@ -302,7 +240,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                         <p className="text-xs md:text-sm font-semibold text-slate-700 leading-tight">SukhSundar Bhavan, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur</p>
                     </div>
                     <span 
-                        data-hide-download
                         className="absolute right-2 top-0 text-[9px] text-amber-700 opacity-0 group-hover:opacity-100 transition-opacity font-bold bg-amber-100/80 px-1.5 py-0.5 rounded-full backdrop-blur-sm pointer-events-none transform -translate-y-1/2 shadow-sm"
                     >
                         View Map
@@ -311,7 +248,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </motion.div>
 
             <motion.div 
-                data-hide-download
                 className="mt-auto flex gap-2 justify-center pb-2 relative z-50"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }}
