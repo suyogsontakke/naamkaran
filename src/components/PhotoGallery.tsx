@@ -12,12 +12,12 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ onClose }) => {
   // State for gallery images. 
   // TODO: Replace these URLs with your actual image paths.
   const [photos, setPhotos] = useState<string[]>([
-    'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=800', // Baby feet
-    'https://images.unsplash.com/photo-1555252333-9f8e92e65df9?auto=format&fit=crop&q=80&w=800', // Baby smile
-    'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?auto=format&fit=crop&q=80&w=800', // Cute baby
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Baby1&backgroundColor=ffdfbf',
-    'https://api.dicebear.com/7.x/avataaars/svg?seed=Baby2&backgroundColor=ffdfbf',
-    'photos'
+    '../photos/image 1.jpg', // Baby feet
+    '../photos/image 2.jpg', // Baby smile
+    '../photos/image 3.jpg', // Cute baby
+    '../photos/image 4.jpg',
+    '../photos/image 5.jpg',
+    '../photos/image 7.jpg'
   ]);
 
   const handleNext = (e?: React.MouseEvent) => {
