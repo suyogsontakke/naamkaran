@@ -21,12 +21,14 @@ const App: React.FC = () => {
 
   // Initialize Audio
   useEffect(() => {
-    const audioUrl = 'https://cdn.pixabay.com/download/audio/2022/02/07/audio_18bf8f6b04.mp3?filename=indian-meditation-flute-18049.mp3';
+    // UPDATED: Points to 'song.mp3' in your public folder
+    const audioUrl = '/song.mp3'; 
     
     audioRef.current = new Audio(audioUrl);
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.4;
+    audioRef.current.volume = 0.5; // Adjust volume (0.0 to 1.0)
 
+    // Cleanup when component unmounts
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -40,6 +42,7 @@ const App: React.FC = () => {
       if (isPlaying) {
         audioRef.current.pause();
       } else {
+        // Browser policy requires user interaction to play audio
         audioRef.current.play().catch(error => {
           console.log("Audio play failed (browser policy):", error);
         });
@@ -50,6 +53,12 @@ const App: React.FC = () => {
 
   const handleNameSubmit = (name: string) => {
     setGuestName(name);
+    // Optional: Auto-play music when they enter their name
+    // (This usually works because clicking "Submit" counts as interaction)
+    if (audioRef.current && !isPlaying) {
+        audioRef.current.play().catch(() => {});
+        setIsPlaying(true);
+    }
   };
 
   const triggerConfetti = useCallback(() => {
