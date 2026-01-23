@@ -9,13 +9,13 @@ interface MapModalProps {
 export const MapModal: React.FC<MapModalProps> = ({ onClose }) => {
   // Exact address for the map query
   const address = "SukhSundar Bhavan, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur";
-  const encodedAddress = encodeURIComponent(address);
-
-  // 1. Correct Google Maps Embed URL for the Iframe
-  const mapSrc = `https://maps.google.com/maps?q=${encodedAddress}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
   
-  // 2. Correct Google Maps Search URL for the "Open App" Button
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+  // CORRECTED URLs:
+  // 1. The Embed Source (for the Iframe inside the app)
+  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  
+  // 2. The External Link (to open the Google Maps App)
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
   return (
     <motion.div
