@@ -12,10 +12,10 @@ export const MapModal: React.FC<MapModalProps> = ({ onClose }) => {
   
   // CORRECTED URLs:
   // 1. The Embed Source (for the Iframe inside the app)
-  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(address)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  const mapSrc = `https://www.google.com/maps/embed?pb=!4v1769138732429!6m8!1m7!1sscbP-OEbbs_NkOlFPeZJsw!2m2!1d21.17920448906362!2d79.0408888480574!3f142.13213096517654!4f-10.202816796089408!5f0.4000000000000002`;
   
   // 2. The External Link (to open the Google Maps App)
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  const googleMapsUrl = `https://maps.app.goo.gl/ZvrYzRP9M9BX6Yot5`;
 
   return (
     <motion.div
