@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2 } from 'lucide-react';
-// IMPORT YOUR IMAGE HERE
-// Make sure the file name matches exactly (invite.png or invite.jpg)
-import inviteImage from '../photos/invite.jpg'; 
+
+// NOTE: We don't need to 'import' images from the public folder.
+// We just reference them as strings like '/invite.png'
 
 interface InvitationCardProps {
   guestName: string;
@@ -76,20 +76,27 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     visible: { opacity: 1, transition: { duration: 1, delay: 0.2 } }
   };
 
-  // UPDATED: Direct File Download Logic
+  // UPDATED: Public Folder Download Logic
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsDownloading(true);
 
-    // Create a temporary link to download the imported image
+    // 1. Define the path to the file in the public folder
+    const imagePath = '/invite.jpg'; 
+
+    // 2. Create a temporary link
     const link = document.createElement('a');
-    link.href = inviteImage;
+    link.href = imagePath;
+    
+    // 3. Set the filename you want the user to save it as
     link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-')}.png`;
+    
+    // 4. Trigger the click
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Reset loading state after a brief delay
+    // 5. Reset button state
     setTimeout(() => setIsDownloading(false), 1000);
   };
 
