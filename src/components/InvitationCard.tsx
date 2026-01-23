@@ -1,23 +1,18 @@
 import React, { useRef, useState } from 'react';
-import { motion, Variants, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, Lightbulb, ExternalLink, Download, Loader2, Mail } from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
-import { EmailModal } from './EmailModal';
-import { emailService } from '../services/emailService';
 
 interface InvitationCardProps {
   guestName: string;
   onOpenGallery: () => void;
-  onOpenSuggestions: () => void;
   onOpenMap?: () => void;
   showDetails?: boolean;
 }
 
-export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenSuggestions, onOpenMap, showDetails = true }) => {
+export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenMap, showDetails = true }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   // Variants definitions
   const containerVariants: Variants = {
@@ -95,34 +90,25 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             onclone: (clonedDoc) => {
                 const clonedCard = clonedDoc.querySelector('[data-card-root]') as HTMLElement;
                 if (clonedCard) {
-                    // Force full height to capture scrolling content
                     clonedCard.style.height = 'auto';
                     clonedCard.style.overflow = 'visible';
                     clonedCard.style.maxHeight = 'none';
                     clonedCard.style.position = 'relative';
-                    // Remove scroll classes
                     clonedCard.classList.remove('overflow-y-auto', 'custom-scrollbar');
-                    
-                    // Add padding at bottom to balance the removal of buttons
                     clonedCard.style.paddingBottom = '60px'; 
-                    
-                    // Ensure transform doesn't mess up capture
                     clonedCard.style.transform = 'none';
                 }
                 
-                // Hide interactive elements (Buttons, Tooltips, Overlays)
                 const elementsToHide = clonedDoc.querySelectorAll('[data-hide-download]');
                 elementsToHide.forEach((el) => {
                     (el as HTMLElement).style.display = 'none';
                 });
 
-                // Fix text rendering: Remove gradients/transparency for solid capture
-                // This ensures text is readable and not "washed out" or invisible
                 const gradientTexts = clonedDoc.querySelectorAll('.text-transparent, .bg-clip-text');
                 gradientTexts.forEach((el) => {
                      const htmlEl = el as HTMLElement;
                      htmlEl.classList.remove('text-transparent', 'bg-clip-text');
-                     htmlEl.style.color = '#d97706'; // Solid Amber-600
+                     htmlEl.style.color = '#d97706'; 
                      htmlEl.style.webkitTextFillColor = '#d97706';
                      htmlEl.style.backgroundImage = 'none';
                 });
@@ -153,20 +139,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     }
   };
 
-  const handleSendEmail = async (email: string) => {
-    setIsSendingEmail(true);
-    try {
-        const dataUrl = await generateCardImage();
-        if (dataUrl) {
-            await emailService.sendInvitation(email, guestName, dataUrl);
-        }
-    } catch (error) {
-        console.error("Email send failed", error);
-    } finally {
-        setIsSendingEmail(false);
-    }
-  };
-
   return (
     <>
         <div 
@@ -174,13 +146,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             data-card-root
             className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center p-4 md:p-6 border-[8px] md:border-[12px] border-double border-amber-200 relative overflow-y-auto custom-scrollbar transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl origin-center"
         >
-        {/* Decorative Corners */}
         <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute bottom-2 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute bottom-2 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
 
-        {/* Watermark */}
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
             <svg viewBox="0 0 100 100" className="w-48 h-48 md:w-64 md:h-64">
                 <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" fill="none" />
@@ -188,7 +158,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </svg>
         </div>
 
-        {/* Content */}
         <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto">
             
             <motion.div 
@@ -200,7 +169,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <motion.div variants={fadeVariants} className="w-12 h-0.5 bg-amber-300 mx-auto"></motion.div>
                 <motion.p variants={fadeVariants} className="text-xs md:text-sm italic text-gray-500">Cordially invites</motion.p>
                 
-                {/* Animated Guest Name */}
                 <motion.div 
                     variants={guestNameVariants}
                     className="relative py-1 perspective-[500px] z-20"
@@ -220,7 +188,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     >
                         {guestName}
                     </h2>
-                    {/* Gradient Overlay - Hidden in Download to avoid duplication/artifacts */}
                     <div 
                         data-hide-download
                         className="absolute inset-0 text-2xl md:text-3xl font-['Great_Vibes'] text-transparent bg-clip-text bg-gradient-to-t from-transparent via-white/40 to-white/60 leading-tight pointer-events-none py-1"
@@ -243,7 +210,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     To the Naamkaran Ceremony of
                 </motion.p>
                 
-                {/* 3D Text Element */}
                 <motion.div 
                     className="relative perspective-[500px] py-2"
                     variants={babyTitleVariants}
@@ -271,7 +237,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     >
                         Baby Boy
                     </h1>
-                    {/* Gradient Overlay - Hidden in Download */}
                     <div 
                         data-hide-download
                         className="absolute inset-0 text-4xl md:text-6xl font-['Cinzel'] font-black text-transparent bg-clip-text bg-gradient-to-t from-amber-600/20 to-white/50 leading-none tracking-wide pointer-events-none py-2"
@@ -281,51 +246,16 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* Suggestion Call to Action - HIDDEN IN DOWNLOAD */}
-                <div className="my-3 relative z-50" data-hide-download>
-                    <motion.button 
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenSuggestions();
-                        }}
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ 
-                            scale: showDetails ? [0, 1.1, 1] : 0,
-                            opacity: showDetails ? 1 : 0,
-                            boxShadow: [
-                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                                "0 4px 6px -1px rgba(245, 158, 11, 0.3)",
-                                "0 1px 2px 0 rgba(0, 0, 0, 0.05)"
-                            ]
-                        }}
-                        transition={{
-                            delay: 2.5, 
-                            duration: 0.6,
-                            boxShadow: {
-                                duration: 2,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }
-                        }}
-                        className="group relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-100 to-white border border-amber-200 shadow-sm transition-all active:scale-95 cursor-pointer z-50 pointer-events-auto"
-                        aria-label="Guess the baby's name"
-                    >
-                        <Lightbulb size={14} className="text-amber-500 group-hover:fill-amber-500 transition-all duration-500" />
-                        <span className="text-xs font-bold text-amber-800">Guess the Name?</span>
-                    </motion.button>
-                </div>
-
                 <motion.p 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: showDetails ? 1 : 0 }}
                     transition={{ delay: 1 }}
-                    className="text-[10px] text-gray-400"
+                    className="text-[10px] text-gray-400 mt-2"
                 >
                     (Son of Mr. & Mrs. Dabhade)
                 </motion.p>
             </div>
 
-            {/* Animated Details Section */}
             <motion.div 
                 className="bg-amber-50/50 p-3 md:p-4 rounded-xl border border-amber-100 shadow-sm space-y-2 mb-2"
                 variants={containerVariants}
@@ -351,7 +281,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* Clickable Map Location */}
                 <motion.div 
                     variants={itemVariants} 
                     className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-100/50 p-1.5 -mx-1.5 rounded-lg transition-colors group relative"
@@ -372,7 +301,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                         </div>
                         <p className="text-xs md:text-sm font-semibold text-slate-700 leading-tight">SukhSundar Bhavan, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur</p>
                     </div>
-                    {/* Tooltip hint - Hidden via element hiding in clone, but adding attribute to be safe if parent isn't hidden */}
                     <span 
                         data-hide-download
                         className="absolute right-2 top-0 text-[9px] text-amber-700 opacity-0 group-hover:opacity-100 transition-opacity font-bold bg-amber-100/80 px-1.5 py-0.5 rounded-full backdrop-blur-sm pointer-events-none transform -translate-y-1/2 shadow-sm"
@@ -380,10 +308,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                         View Map
                     </span>
                 </motion.div>
-
             </motion.div>
 
-            {/* Bottom Buttons - HIDDEN IN DOWNLOAD */}
             <motion.div 
                 data-hide-download
                 className="mt-auto flex gap-2 justify-center pb-2 relative z-50"
@@ -402,19 +328,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> Photos
                 </button>
 
-                {/* Email Button */}
-                <button 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setShowEmailModal(true);
-                    }}
-                    className="flex-1 bg-amber-500 text-white border border-amber-600 px-2 py-2 rounded-lg text-[10px] md:text-xs font-bold shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-1 hover:bg-amber-600 cursor-pointer pointer-events-auto"
-                    aria-label="Email Invitation"
-                >
-                    <Mail size={12} /> Email
-                </button>
-                
-                {/* Download Button */}
                 <button 
                     onClick={handleDownload}
                     disabled={isDownloading}
@@ -434,16 +347,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </motion.div>
         </div>
         </div>
-        
-        <AnimatePresence>
-            {showEmailModal && (
-                <EmailModal 
-                    onClose={() => setShowEmailModal(false)}
-                    onSend={handleSendEmail}
-                    isSending={isSendingEmail}
-                />
-            )}
-        </AnimatePresence>
     </>
   );
 };
