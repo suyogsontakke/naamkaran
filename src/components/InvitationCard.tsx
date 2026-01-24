@@ -63,7 +63,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startDate}/${endDate}`;
   };
 
-  // Variants definitions
+  // Variants
   const containerVariants: Variants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.2, delayChildren: 2.2 } } };
   const itemVariants: Variants = { hidden: { opacity: 0, y: 10, x: -5 }, visible: { opacity: 1, y: 0, x: 0, transition: { type: "spring", stiffness: 100, damping: 12 } } };
   const babyTitleVariants: Variants = { hidden: { scale: 0.8, rotateX: 40, opacity: 0, y: 20 }, visible: { scale: 1, rotateX: 0, opacity: 1, y: 0, transition: { delay: 0.5, duration: 1.0, type: "spring", bounce: 0.5 } } };
@@ -89,29 +89,35 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   };
 
   return (
-    <div className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center px-4 pb-6 pt-2 relative overflow-y-auto custom-scrollbar transition-all duration-500 origin-center">
+    // Outer scroll container
+    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative">
         
-        {/* Sticky Language Toggle */}
-        <div className="sticky top-0 z-50 w-full flex justify-end pb-2 pointer-events-none">
-            <button 
-                onClick={() => setIsMarathi(!isMarathi)}
-                className="pointer-events-auto flex items-center gap-2 bg-[#fffcf5] text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95"
-            >
-                <Globe size={12} className="text-amber-700" /> 
-                <span className="tracking-wide">{isMarathi ? "Switch to English" : "मराठी मध्ये वाचा"}</span>
-            </button>
-        </div>
+        {/* INNER CONTENT WRAPPER 
+            'min-h-full' ensures this div grows to fit all text.
+            'relative' allows us to position borders at the absolute bottom of THIS div.
+        */}
+        <div className="relative min-h-full flex flex-col w-full max-w-[90%] mx-auto pb-6">
 
-        {/* RESTORED: Corner Decorations (Yellow Borders) */}
-        <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
-        <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
-        <div className="absolute bottom-2 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
-        <div className="absolute bottom-2 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
+            {/* TOP DECORATIONS (Absolute to the wrapper) */}
+            <div className="absolute top-2 -left-4 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
+            <div className="absolute top-2 -right-4 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
 
-        {/* UPDATED: Added 'mt-10' to create space between the scroll roller and the content */}
-        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto mt-10">
-            
-            <motion.div className="space-y-1" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
+            {/* LANGUAGE BUTTON 
+                Positioned inside the flow with 'mt-6' to give breathing room from the top roller.
+                'self-end' pushes it to the right.
+            */}
+            <div className="w-full flex justify-end mt-6 mb-2 px-1 relative z-50">
+                <button 
+                    onClick={() => setIsMarathi(!isMarathi)}
+                    className="flex items-center gap-2 bg-[#fffcf5] text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95 hover:bg-amber-50"
+                >
+                    <Globe size={12} className="text-amber-700" /> 
+                    <span className="tracking-wide">{isMarathi ? "Switch to English" : "मराठी मध्ये वाचा"}</span>
+                </button>
+            </div>
+
+            {/* TEXT CONTENT */}
+            <motion.div className="space-y-1 text-center" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 <motion.h3 variants={fadeVariants} className={`text-amber-600 tracking-[0.2em] uppercase font-bold ${isMarathi ? 'text-xs font-serif' : 'text-sm md:text-base'}`}>
                     {t.host}
                 </motion.h3>
@@ -126,7 +132,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <motion.span variants={fadeVariants} className="text-xs md:text-sm font-serif text-gray-500 block">- with Family -</motion.span>
             </motion.div>
 
-            <div className="py-2 md:py-4 flex flex-col items-center">
+            <div className="py-2 md:py-4 flex flex-col items-center text-center">
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: showDetails ? 1 : 0 }} transition={{ delay: 0.4 }}
                     className={`text-gray-500 mb-2 uppercase tracking-widest ${isMarathi ? 'text-[10px] font-bold font-serif' : 'text-[10px] md:text-xs'}`}>
                     {t.ceremony}
@@ -204,6 +210,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.div>
             </motion.div>
 
+            {/* BUTTONS SECTION (Push to bottom of flex container) */}
             <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
@@ -212,7 +219,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
-                {/* BLESSING BUTTON */}
                 <button onClick={handleBlessing}
                     className="w-9 h-9 flex items-center justify-center bg-rose-100 text-rose-600 border border-rose-200 rounded-full shadow-sm hover:scale-110 active:scale-95 transition-transform"
                     title="Shower Blessings">
@@ -226,10 +232,15 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 5, 0] }} transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
-                className="sticky bottom-0 left-0 right-0 flex flex-col items-center justify-center text-amber-700/60 pb-1 z-0 pointer-events-none mt-2" data-hide-download>
+                className="flex flex-col items-center justify-center text-amber-700/60 pb-2 z-0 pointer-events-none mt-2" data-hide-download>
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
                 <ChevronsDown size={16} />
             </motion.div>
+
+            {/* BOTTOM DECORATIONS (Absolute to the GROWING wrapper) */}
+            <div className="absolute bottom-0 -left-4 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
+            <div className="absolute bottom-0 -right-4 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
+
         </div>
     </div>
   );
