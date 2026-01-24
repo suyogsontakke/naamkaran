@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, Variants } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe } from 'lucide-react';
 
 interface InvitationCardProps {
@@ -40,6 +40,9 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const [isDownloading, setIsDownloading] = useState(false);
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  
+  // State to handle Scroll Indicator visibility
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const t = {
     greeting: isMarathi ? "नमो बुद्धाय" : "Namo Buddhay",
@@ -88,6 +91,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&dates=${startDate}/${endDate}`;
   };
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (e.currentTarget.scrollTop > 10) {
+        setHasScrolled(true);
+    } else {
+        setHasScrolled(false);
+    }
+  };
+
   const containerVariants: Variants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.2, delayChildren: 2.2 } } };
   const itemVariants: Variants = { hidden: { opacity: 0, y: 10, x: -5 }, visible: { opacity: 1, y: 0, x: 0, transition: { type: "spring", stiffness: 100, damping: 12 } } };
   const babyTitleVariants: Variants = { hidden: { scale: 0.8, rotateX: 40, opacity: 0, y: 20 }, visible: { scale: 1, rotateX: 0, opacity: 1, y: 0, transition: { delay: 0.5, duration: 1.0, type: "spring", bounce: 0.5 } } };
@@ -109,11 +120,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
   const handleBlessing = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onBlessing) onBlessing(); // Triggers the flower animation
+    if (onBlessing) onBlessing(); 
   };
 
   return (
-    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[8px] border-double border-amber-200/50">
+    <div 
+        onScroll={handleScroll}
+        className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[8px] border-double border-amber-200/50"
+    >
         
         <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-16">
 
@@ -220,29 +234,30 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* FIXED: VENUE CARD (Clean, No Yellow BG) */}
+                {/* FIXED VENUE CARD: Clean layout with Blue Button */}
                 <motion.div 
                     variants={itemVariants} 
-                    className="flex items-center gap-3 text-left cursor-pointer p-1 -mx-1 rounded-lg transition-colors group relative border border-transparent hover:border-blue-200"
+                    className="flex items-center justify-between cursor-pointer p-2 -mx-1.5 rounded-lg transition-colors bg-white border border-transparent hover:border-blue-200 hover:shadow-sm"
                     onClick={(e) => {
                         e.stopPropagation();
                         if (onOpenMap) onOpenMap();
                     }}
                 >
-                    <div className="p-1.5 md:p-2 bg-blue-100 rounded-full text-blue-700 shrink-0"><MapPin size={14} /></div>
-                    <div className="flex-1">
-                        <div className="flex justify-between items-center">
-                            {/* Removed group-hover text color change to keep it clean */}
+                    <div className="flex items-center gap-3 flex-1">
+                        <div className="p-1.5 md:p-2 bg-blue-100 rounded-full text-blue-700 shrink-0"><MapPin size={14} /></div>
+                        <div className="flex-1">
                             <p className={`text-[10px] text-slate-500 uppercase font-bold ${isMarathi ? 'font-serif' : ''}`}>{t.venueLabel}</p>
-                            <ExternalLink size={10} className="text-amber-500 opacity-0 group-hover:opacity-100" />
+                            <p className={`text-xs md:text-sm font-semibold text-slate-800 leading-tight ${isMarathi ? 'font-serif' : ''}`}>{t.venueValue}</p>
                         </div>
-                        {/* Clean Text, no extra styling */}
-                        <p className={`text-xs md:text-sm font-semibold text-slate-800 leading-tight ${isMarathi ? 'font-serif' : ''}`}>{t.venueValue}</p>
+                    </div>
+                    
+                    {/* The Blue View Map Button (No yellow bg) */}
+                    <div className="ml-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1.5 rounded shadow-sm flex items-center gap-1 hover:bg-blue-700">
+                        {t.map} <ExternalLink size={8} />
                     </div>
                 </motion.div>
             </motion.div>
 
-            {/* FIXED: BUTTONS (Middle Button Restored) */}
             <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
@@ -251,7 +266,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
-                {/* Blessing/Flower Button restored */}
                 <button onClick={handleBlessing}
                     className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-300 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform"
                     title="Shower Blessings">
@@ -264,13 +278,25 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </button>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 5, 0] }} transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
-                className="flex flex-col items-center justify-center text-amber-800/60 pb-2 z-0 pointer-events-none mt-2" data-hide-download>
-                <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
-                <ChevronsDown size={16} />
-            </motion.div>
-
         </div>
+
+        {/* FLOATING SCROLL INDICATOR (VISIBLE IMMEDIATELY) */}
+        <AnimatePresence>
+            {!hasScrolled && showDetails && (
+                <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="fixed bottom-12 left-0 right-0 z-50 flex flex-col items-center justify-center pointer-events-none"
+                >
+                    <div className="bg-amber-900/80 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg border border-amber-500/30 flex flex-col items-center">
+                        <span className="text-[9px] uppercase tracking-widest font-bold text-amber-100 mb-0.5">{t.scroll}</span>
+                        <ChevronsDown size={16} className="text-amber-200 animate-bounce" />
+                    </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
+
     </div>
   );
 };
