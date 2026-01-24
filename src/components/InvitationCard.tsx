@@ -90,7 +90,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col">
         
-        {/* INNER WRAPPER - Flex Column ensures bottom items stay at bottom */}
+        {/* INNER WRAPPER */}
         <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto">
 
             {/* TOP DECORATIONS */}
@@ -116,7 +116,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <motion.div variants={fadeVariants} className="w-12 h-0.5 bg-amber-300 mx-auto"></motion.div>
                 <motion.p variants={fadeVariants} className={`italic text-gray-500 ${isMarathi ? 'text-xs font-serif' : 'text-xs md:text-sm'}`}>{t.invites}</motion.p>
                 
-                <motion.div variants={guestNameVariants} className="relative py-1 perspective-[500px] z-20">
+                <motion.div 
+                    variants={guestNameVariants} 
+                    className="relative py-1 perspective-[500px] z-20 cursor-pointer"
+                    whileHover={{ scale: 1.1, rotateX: 5, rotateY: 5 }}
+                >
                     <h2 className="text-2xl md:text-3xl font-['Great_Vibes'] text-amber-600 leading-tight" style={{ textShadow: `0 1px 0 #d97706, 0 2px 0 #b45309` }}>
                         {guestName}
                     </h2>
@@ -130,7 +134,13 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     {t.ceremony}
                 </motion.p>
                 
-                <motion.div className="relative perspective-[500px] py-2" variants={babyTitleVariants} initial="hidden" animate={showDetails ? "visible" : "hidden"}>
+                <motion.div 
+                    className="relative perspective-[500px] py-2 cursor-pointer" 
+                    variants={babyTitleVariants} 
+                    initial="hidden" 
+                    animate={showDetails ? "visible" : "hidden"}
+                    whileHover={{ scale: 1.1, rotateX: 10, rotateY: -10 }}
+                >
                     <h1 className={`font-black text-amber-500 leading-none tracking-wide ${isMarathi ? 'text-3xl md:text-5xl font-serif' : "text-4xl md:text-6xl font-['Cinzel']"}`}
                         style={{ textShadow: `0 1px 0 #b45309, 0 3px 5px rgba(0,0,0,0.2)`, WebkitTextStroke: '1px #b45309' }}>
                         {t.babyTitle}
@@ -187,7 +197,15 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-50 p-1 -mx-1 rounded-lg transition-colors group relative">
+                {/* FIXED: Added onClick to open map */}
+                <motion.div 
+                    variants={itemVariants} 
+                    className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-50 p-1 -mx-1 rounded-lg transition-colors group relative"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenMap) onOpenMap();
+                    }}
+                >
                     <div className="p-1.5 md:p-2 bg-amber-100 rounded-full text-amber-700 shrink-0"><MapPin size={14} /></div>
                     <div className="flex-1">
                         <div className="flex justify-between items-center">
@@ -229,7 +247,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <ChevronsDown size={16} />
             </motion.div>
 
-            {/* BOTTOM DECORATIONS - Now static flex items at the very end */}
+            {/* BOTTOM DECORATIONS */}
             <div className="flex justify-between w-full mt-2">
                 <div className="w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
                 <div className="w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
