@@ -12,12 +12,12 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ isOpen, onClose }) =
 
   // 6 Photos Grid
   const photos = [
-    "image 1",
-    "image 2",
-    "image 3",
-    "image 4",
-    "image 5",
-    "image 7"
+    "/image 1",
+    "/image 2",
+    "/image 3",
+    "/image 4",
+    "/image 5",
+    "/image 7"
   ];
 
   return (
