@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Languages } from 'lucide-react';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
   onOpenGallery: () => void;
   onOpenMap?: () => void;
   showDetails?: boolean;
-  onBlessing?: () => void; // Prop for the effect
+  onBlessing?: () => void; 
 }
 
 export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenMap, showDetails = true, onBlessing }) => {
@@ -63,7 +63,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startDate}/${endDate}`;
   };
 
-  // Variants definitions (same as before)
+  // Variants definitions
   const containerVariants: Variants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.2, delayChildren: 2.2 } } };
   const itemVariants: Variants = { hidden: { opacity: 0, y: 10, x: -5 }, visible: { opacity: 1, y: 0, x: 0, transition: { type: "spring", stiffness: 100, damping: 12 } } };
   const babyTitleVariants: Variants = { hidden: { scale: 0.8, rotateX: 40, opacity: 0, y: 20 }, visible: { scale: 1, rotateX: 0, opacity: 1, y: 0, transition: { delay: 0.5, duration: 1.0, type: "spring", bounce: 0.5 } } };
@@ -91,13 +91,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center p-4 md:p-6 border-[8px] md:border-[12px] border-double border-amber-200 relative overflow-y-auto custom-scrollbar transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl origin-center">
         
-        {/* Language Toggle - Positioned Top Center/Right */}
-        <div className="absolute top-3 right-3 z-50">
+        {/* Sticky Language Toggle */}
+        <div className="sticky top-0 z-50 w-full flex justify-end px-2 pt-2 pointer-events-none">
             <button 
                 onClick={() => setIsMarathi(!isMarathi)}
-                className="flex items-center gap-1 bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-2 py-1 rounded-full text-[10px] font-bold shadow-sm transition-colors"
+                className="pointer-events-auto flex items-center gap-2 bg-white/60 backdrop-blur-md hover:bg-white/80 text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95"
             >
-                <Languages size={12} /> {isMarathi ? "EN" : "मराठी"}
+                <Globe size={12} className="text-amber-700" /> 
+                <span className="tracking-wide">{isMarathi ? "Switch to English" : "मराठी मध्ये वाचा"}</span>
             </button>
         </div>
 
@@ -107,9 +108,10 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
         <div className="absolute bottom-2 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute bottom-2 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
 
-        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto">
+        {/* UPDATED: Removed negative margin (-mt-6) and added padding (mt-8) to push text down */}
+        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto mt-8">
             
-            <motion.div className="space-y-1 mt-4" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
+            <motion.div className="space-y-1" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 <motion.h3 variants={fadeVariants} className={`text-amber-600 tracking-[0.2em] uppercase font-bold ${isMarathi ? 'text-xs font-serif' : 'text-sm md:text-base'}`}>
                     {t.host}
                 </motion.h3>
@@ -210,7 +212,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
-                {/* SUBTLE BLESSING BUTTON */}
+                {/* BLESSING BUTTON */}
                 <button onClick={handleBlessing}
                     className="w-9 h-9 flex items-center justify-center bg-rose-100 text-rose-600 border border-rose-200 rounded-full shadow-sm hover:scale-110 active:scale-95 transition-transform"
                     title="Shower Blessings">
