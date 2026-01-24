@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown } from 'lucide-react';
 
-// NOTE: We don't need to 'import' images from the public folder.
-// We just reference them as strings like '/invite.png'
+// Make sure your image path is correct here (public folder logic)
+// Since we are using the public folder method now, we don't strictly need to import the image,
+// but we will keep the standard setup.
 
 interface InvitationCardProps {
   guestName: string;
@@ -76,27 +77,21 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     visible: { opacity: 1, transition: { duration: 1, delay: 0.2 } }
   };
 
-  // UPDATED: Public Folder Download Logic
+  // Public Folder Download Logic
   const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsDownloading(true);
 
-    // 1. Define the path to the file in the public folder
-    const imagePath = '/invite.jpg'; 
+    const imagePath = '/invite.png'; 
 
-    // 2. Create a temporary link
     const link = document.createElement('a');
     link.href = imagePath;
-    
-    // 3. Set the filename you want the user to save it as
     link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-')}.png`;
     
-    // 4. Trigger the click
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // 5. Reset button state
     setTimeout(() => setIsDownloading(false), 1000);
   };
 
@@ -105,11 +100,13 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
         <div 
             className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center p-4 md:p-6 border-[8px] md:border-[12px] border-double border-amber-200 relative overflow-y-auto custom-scrollbar transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl origin-center"
         >
+        {/* Corner Decorations */}
         <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute bottom-2 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
         <div className="absolute bottom-2 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
 
+        {/* Background Pattern */}
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
             <svg viewBox="0 0 100 100" className="w-48 h-48 md:w-64 md:h-64">
                 <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="2" fill="none" />
@@ -288,6 +285,20 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     )}
                 </button>
             </motion.div>
+
+            {/* NEW: Sticky Scroll Indicator */}
+            {/* This element sticks to the bottom of the scroll area to remind users to scroll */}
+            <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1, y: [0, 5, 0] }}
+                transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
+                className="sticky bottom-0 left-0 right-0 flex flex-col items-center justify-center text-amber-700/60 pb-1 z-0 pointer-events-none mt-4"
+                data-hide-download // This ensures it doesn't appear in screenshots/downloads
+            >
+                <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">Scroll Down</span>
+                <ChevronsDown size={16} />
+            </motion.div>
+
         </div>
         </div>
     </>
