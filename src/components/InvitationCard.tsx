@@ -88,14 +88,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   };
 
   return (
-    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative">
+    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col">
         
-        {/* INNER CONTENT WRAPPER */}
-        <div className="relative min-h-full flex flex-col w-full max-w-[90%] mx-auto pb-8">
+        {/* INNER WRAPPER - Flex Column ensures bottom items stay at bottom */}
+        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto">
 
-            {/* TOP DECORATIONS (Inside visible area) */}
-            <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
-            <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
+            {/* TOP DECORATIONS */}
+            <div className="absolute top-2 left-0 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
+            <div className="absolute top-2 right-0 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
 
             {/* LANGUAGE BUTTON */}
             <div className="w-full flex justify-end mt-6 mb-2 px-1 relative z-50">
@@ -108,7 +108,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </button>
             </div>
 
-            {/* TEXT CONTENT */}
+            {/* CONTENT */}
             <motion.div className="space-y-1 text-center" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 <motion.h3 variants={fadeVariants} className={`text-amber-600 tracking-[0.2em] uppercase font-bold ${isMarathi ? 'text-xs font-serif' : 'text-sm md:text-base'}`}>
                     {t.host}
@@ -160,7 +160,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 ))}
             </motion.div>
 
-            {/* DETAILS */}
+            {/* DETAILS CARD */}
             <motion.div className="bg-white/60 p-3 md:p-4 rounded-xl border border-amber-100 shadow-sm space-y-3 mb-2"
                 variants={containerVariants} initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 
@@ -224,14 +224,16 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 5, 0] }} transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
-                className="flex flex-col items-center justify-center text-amber-700/60 pb-2 z-0 pointer-events-none mt-2" data-hide-download>
+                className="flex flex-col items-center justify-center text-amber-700/60 pb-4 z-0 pointer-events-none mt-2" data-hide-download>
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
                 <ChevronsDown size={16} />
             </motion.div>
 
-            {/* BOTTOM DECORATIONS (Inside visible area) */}
-            <div className="absolute bottom-0 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
-            <div className="absolute bottom-0 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
+            {/* BOTTOM DECORATIONS - Now static flex items at the very end */}
+            <div className="flex justify-between w-full mt-2">
+                <div className="w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
+                <div className="w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
+            </div>
 
         </div>
     </div>
