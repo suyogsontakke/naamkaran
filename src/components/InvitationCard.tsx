@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe, Heart } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
@@ -10,10 +10,28 @@ interface InvitationCardProps {
   onBlessing?: () => void; 
 }
 
+// Custom Palna (Cradle) Icon Component
+const PalnaIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-2 text-amber-500 fill-current drop-shadow-sm">
+    <path d="M10,30 Q50,60 90,30" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    <path d="M20,30 L20,70 Q50,90 80,70 L80,30" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+    <path d="M20,45 Q50,65 80,45" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="4 2" />
+    <circle cx="50" cy="55" r="5" fill="currentColor" />
+  </svg>
+);
+
+interface FlyingHeart {
+  id: number;
+  x: number;
+  color: string;
+  scale: number;
+}
+
 export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenMap, showDetails = true, onBlessing }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [hearts, setHearts] = useState<FlyingHeart[]>([]);
 
   // Translations
   const t = {
@@ -27,7 +45,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     timeLabel: isMarathi ? "वेळ" : "Time",
     timeValue: isMarathi ? "दुपारी १२:३० वाजता" : "12:30 PM Onwards",
     venueLabel: isMarathi ? "स्थळ" : "Venue",
-    venueValue: isMarathi ? "सुखसुंदर भवन, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" : "SukhSundar Bhavan, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर",
+    venueValue: isMarathi ? "सुखसुंदर भवन, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" : "SukhSundar Bhavan, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur",
     scroll: isMarathi ? "खाली पहा" : "Scroll Down",
     photos: isMarathi ? "फोटो" : "Photos",
     download: isMarathi ? "डाउनलोड" : "Download",
@@ -35,6 +53,15 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     bless: isMarathi ? "आशीर्वाद" : "Bless",
     addCal: isMarathi ? "जतन करा" : "Add"
   };
+
+  const wishes = [
+    "Best wishes from the Patil Family! 🌸",
+    "Blessings to the little prince! - Sharma Family ✨",
+    "Lots of love to Baby Dabhade ❤️",
+    "Congratulations to the proud parents! 🎉",
+    "May God bless the little one with health and happiness 🙏",
+    "Can't wait to see the baby! - Anjali & Rahul"
+  ];
 
   useEffect(() => {
     const targetDate = new Date('2026-02-15T12:30:00').getTime();
@@ -87,17 +114,31 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     if (onBlessing) onBlessing();
   };
 
+  // HEART REACTION LOGIC
+  const triggerHeart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newHeart: FlyingHeart = {
+      id: Date.now(),
+      x: Math.random() * 40 - 20, // Random X scatter
+      color: ['#ef4444', '#ec4899', '#f43f5e', '#e11d48'][Math.floor(Math.random() * 4)], // Red/Pink variants
+      scale: 0.8 + Math.random() * 0.5 // Random size
+    };
+    setHearts(prev => [...prev, newHeart]);
+    
+    // Auto remove heart after animation
+    setTimeout(() => {
+        setHearts(prev => prev.filter(h => h.id !== newHeart.id));
+    }, 2000);
+  };
+
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col">
         
-        {/* INNER WRAPPER 
-            Added 'pt-12' (padding-top) here to push ALL content down from the start.
-            This fixes the overlapping top issue and naturally fills the bottom space.
-        */}
-        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-4 pt-12">
+        {/* INNER WRAPPER */}
+        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-12 pt-16">
 
             {/* LANGUAGE BUTTON */}
-            <div className="w-full flex justify-end mb-2 px-1 relative z-50">
+            <div className="w-full flex justify-end mb-4 px-1 relative z-50">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
                     className="flex items-center gap-2 bg-[#fffcf5] text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95 hover:bg-amber-50"
@@ -132,9 +173,23 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     className={`text-gray-500 mb-2 uppercase tracking-widest ${isMarathi ? 'text-[10px] font-bold font-serif' : 'text-[10px] md:text-xs'}`}>
                     {t.ceremony}
                 </motion.p>
+
+                {/* Animated Palna Icon */}
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: showDetails ? 1 : 0, scale: showDetails ? 1 : 0 }}
+                    transition={{ delay: 0.6 }}
+                >
+                    <motion.div
+                        animate={{ rotate: [-3, 3, -3] }}
+                        transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+                    >
+                        <PalnaIcon />
+                    </motion.div>
+                </motion.div>
                 
                 <motion.div 
-                    className="relative perspective-[500px] py-2 cursor-pointer" 
+                    className="relative perspective-[500px] py-1 cursor-pointer" 
                     variants={babyTitleVariants} 
                     initial="hidden" 
                     animate={showDetails ? "visible" : "hidden"}
@@ -196,7 +251,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* Fixed Map Link */}
                 <motion.div 
                     variants={itemVariants} 
                     className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-50 p-1 -mx-1 rounded-lg transition-colors group relative"
@@ -228,6 +282,9 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
+                {/* ORIGINAL BLESSING BUTTON (Hidden/Replaced by Heart logic or keep both?) 
+                    Keeping it as requested for "Shower Blessings" feature.
+                */}
                 <button onClick={handleBlessing}
                     className="w-9 h-9 flex items-center justify-center bg-rose-100 text-rose-600 border border-rose-200 rounded-full shadow-sm hover:scale-110 active:scale-95 transition-transform"
                     title="Shower Blessings">
@@ -240,13 +297,79 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </button>
             </motion.div>
 
+            {/* SCROLL INDICATOR */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 5, 0] }} transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
-                className="flex flex-col items-center justify-center text-amber-700/60 pb-4 z-0 pointer-events-none mt-2" data-hide-download>
+                className="flex flex-col items-center justify-center text-amber-700/60 pb-2 z-0 pointer-events-none mt-2" data-hide-download>
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
                 <ChevronsDown size={16} />
             </motion.div>
 
+             {/* WISHES WALL (MARQUEE) */}
+             <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: showDetails ? 1 : 0 }} 
+                transition={{ delay: 3.5 }}
+                className="mt-6 border-t border-amber-100 pt-2 relative overflow-hidden"
+             >
+                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#fffcf5] to-transparent z-10"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#fffcf5] to-transparent z-10"></div>
+                
+                <div className="flex whitespace-nowrap overflow-hidden">
+                    <motion.div 
+                        className="flex gap-8 text-[10px] text-amber-700/70 italic font-serif"
+                        animate={{ x: ["0%", "-50%"] }}
+                        transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+                    >
+                        {[...wishes, ...wishes].map((wish, i) => (
+                            <span key={i} className="flex items-center gap-2">
+                                <span className="w-1 h-1 bg-amber-300 rounded-full"></span>
+                                {wish}
+                            </span>
+                        ))}
+                    </motion.div>
+                </div>
+            </motion.div>
+
         </div>
+
+        {/* ---------------------------------------------------- */}
+        {/* FLOATING HEART REACTION BUTTON & ANIMATION CONTAINER */}
+        {/* ---------------------------------------------------- */}
+        
+        {/* The Button */}
+        <div className="absolute bottom-20 right-4 z-[100]">
+             <button 
+                onClick={triggerHeart}
+                className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-transform border-2 border-white"
+             >
+                <Heart size={20} fill="currentColor" />
+             </button>
+        </div>
+
+        {/* The Hearts Container (Pointer events none so clicks pass through) */}
+        <div className="absolute bottom-24 right-4 w-12 h-[300px] pointer-events-none z-[90] overflow-visible">
+            <AnimatePresence>
+                {hearts.map((heart) => (
+                    <motion.div
+                        key={heart.id}
+                        initial={{ opacity: 1, y: 0, x: 0, scale: 0 }}
+                        animate={{ 
+                            opacity: 0, 
+                            y: -250, 
+                            x: heart.x, 
+                            scale: heart.scale 
+                        }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 2, ease: "easeOut" }}
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 text-rose-500 drop-shadow-sm"
+                        style={{ color: heart.color }}
+                    >
+                        <Heart fill="currentColor" size={24} />
+                    </motion.div>
+                ))}
+            </AnimatePresence>
+        </div>
+
     </div>
   );
 };
