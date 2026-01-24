@@ -89,27 +89,23 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   };
 
   return (
-    <div className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center p-4 md:p-6 border-[8px] md:border-[12px] border-double border-amber-200 relative overflow-y-auto custom-scrollbar transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl origin-center">
+    <div className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center px-4 pb-6 pt-2 relative overflow-y-auto custom-scrollbar transition-all duration-500 origin-center">
         
-        {/* Sticky Language Toggle */}
-        <div className="sticky top-0 z-50 w-full flex justify-end px-2 pt-2 pointer-events-none">
+        {/* Sticky Language Toggle - Clean & Solid Background */}
+        <div className="sticky top-0 z-50 w-full flex justify-end pb-2 pointer-events-none">
             <button 
                 onClick={() => setIsMarathi(!isMarathi)}
-                className="pointer-events-auto flex items-center gap-2 bg-white/60 backdrop-blur-md hover:bg-white/80 text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95"
+                className="pointer-events-auto flex items-center gap-2 bg-[#fffcf5] text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95"
             >
                 <Globe size={12} className="text-amber-700" /> 
                 <span className="tracking-wide">{isMarathi ? "Switch to English" : "मराठी मध्ये वाचा"}</span>
             </button>
         </div>
 
-        {/* Decorations */}
-        <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
-        <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
-        <div className="absolute bottom-2 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
-        <div className="absolute bottom-2 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
+        {/* Removed the Corner Decorations (The Absolute Divs) to clean up the UI */}
 
-        {/* UPDATED: Removed negative margin (-mt-6) and added padding (mt-8) to push text down */}
-        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto mt-8">
+        {/* Added mt-4 to push text down away from the language button */}
+        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto mt-4">
             
             <motion.div className="space-y-1" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 <motion.h3 variants={fadeVariants} className={`text-amber-600 tracking-[0.2em] uppercase font-bold ${isMarathi ? 'text-xs font-serif' : 'text-sm md:text-base'}`}>
@@ -162,10 +158,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 ))}
             </motion.div>
 
-            <motion.div className="bg-amber-50/50 p-3 md:p-4 rounded-xl border border-amber-100 shadow-sm space-y-2 mb-2"
+            {/* Details Section - Cleaned up borders */}
+            <motion.div className="bg-white/60 p-3 md:p-4 rounded-xl border border-amber-100 shadow-sm space-y-3 mb-2"
                 variants={containerVariants} initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 
-                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left">
+                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left border-b border-amber-100/50 pb-2 last:border-0 last:pb-0">
                     <div className="p-1.5 md:p-2 bg-amber-100 rounded-full text-amber-700 shrink-0"><Calendar size={14} /></div>
                     <div className="flex-1">
                         <p className={`text-[10px] text-gray-500 uppercase font-bold ${isMarathi ? 'font-serif' : ''}`}>{t.dateLabel}</p>
@@ -180,7 +177,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left">
+                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left border-b border-amber-100/50 pb-2 last:border-0 last:pb-0">
                     <div className="p-1.5 md:p-2 bg-amber-100 rounded-full text-amber-700 shrink-0"><Clock size={14} /></div>
                     <div>
                         <p className={`text-[10px] text-gray-500 uppercase font-bold ${isMarathi ? 'font-serif' : ''}`}>{t.timeLabel}</p>
@@ -188,8 +185,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-100/50 p-1.5 -mx-1.5 rounded-lg transition-colors group relative"
-                    onClick={(e) => { e.stopPropagation(); if (onOpenMap) onOpenMap(); }}>
+                <motion.div variants={itemVariants} className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-50 p-1 -mx-1 rounded-lg transition-colors group relative">
                     <div className="p-1.5 md:p-2 bg-amber-100 rounded-full text-amber-700 shrink-0"><MapPin size={14} /></div>
                     <div className="flex-1">
                         <div className="flex justify-between items-center">
@@ -204,7 +200,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.div>
             </motion.div>
 
-            <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center"
+            <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
                 <button onClick={(e) => { e.stopPropagation(); onOpenGallery(); }}
@@ -226,7 +222,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 5, 0] }} transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
-                className="sticky bottom-0 left-0 right-0 flex flex-col items-center justify-center text-amber-700/60 pb-1 z-0 pointer-events-none mt-4" data-hide-download>
+                className="sticky bottom-0 left-0 right-0 flex flex-col items-center justify-center text-amber-700/60 pb-1 z-0 pointer-events-none mt-2" data-hide-download>
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
                 <ChevronsDown size={16} />
             </motion.div>
