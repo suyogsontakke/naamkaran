@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { InvitationCard } from './InvitationCard';
 
 interface Envelope3DProps {
@@ -7,96 +7,134 @@ interface Envelope3DProps {
   onOpenGallery: () => void;
   onOpenMap?: () => void;
   onOpenComplete?: () => void;
-  onBlessing?: () => void; // New Prop
+  onBlessing?: () => void;
 }
 
 export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery, onOpenMap, onOpenComplete, onBlessing }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showCard, setShowCard] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
+  // Auto-open sequence
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // 1. Wait a moment, then open the scroll
+    const openTimer = setTimeout(() => {
       setIsOpen(true);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
+    }, 1000);
 
-  useEffect(() => {
-    if (isOpen) {
-      const timer = setTimeout(() => {
-        setShowCard(true);
-        if (onOpenComplete) {
-            setTimeout(onOpenComplete, 300);
-        }
-      }, 600);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, onOpenComplete]);
+    // 2. Trigger "Show Content" (text animations inside) after scroll finishes unrolling
+    const contentTimer = setTimeout(() => {
+      setShowContent(true);
+      if (onOpenComplete) onOpenComplete();
+    }, 2500); // 1s wait + 1.5s animation
 
-  const ShimmerEffect = () => (
-    <motion.div className="absolute inset-0 z-[25] pointer-events-none mix-blend-overlay"
-      style={{ background: 'linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.4) 45%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0.4) 55%, transparent 60%)', backgroundSize: '200% 100%' }}
-      animate={{ backgroundPosition: ['150% 0', '-150% 0'] }} transition={{ duration: 3, repeat: Infinity, repeatDelay: 4 }} />
+    return () => {
+      clearTimeout(openTimer);
+      clearTimeout(contentTimer);
+    };
+  }, [onOpenComplete]);
+
+  // The Golden Roller Component
+  const ScrollRoller = ({ position }: { position: 'top' | 'bottom' }) => (
+    <div 
+      className={`absolute left-1/2 -translate-x-1/2 w-[110%] h-12 md:h-16 z-50 rounded-full shadow-2xl flex items-center justify-center
+        ${position === 'top' ? '-top-6 md:-top-8' : '-bottom-6 md:-bottom-8'}
+      `}
+      style={{
+        background: 'linear-gradient(90deg, #8B4513 0%, #CD853F 10%, #FFD700 40%, #FDB931 50%, #FFD700 60%, #CD853F 90%, #8B4513 100%)',
+        boxShadow: '0px 10px 20px rgba(0,0,0,0.4), inset 0px 2px 5px rgba(255,255,255,0.3)'
+      }}
+    >
+      {/* Decorative knobs on ends */}
+      <div className="absolute left-1 top-1/2 -translate-y-1/2 w-3 h-8 md:h-12 bg-amber-800 rounded-sm shadow-inner border-r border-amber-600"></div>
+      <div className="absolute right-1 top-1/2 -translate-y-1/2 w-3 h-8 md:h-12 bg-amber-800 rounded-sm shadow-inner border-l border-amber-600"></div>
+      
+      {/* Shiny reflection line */}
+      <div className="w-full h-[2px] bg-white/40 blur-[1px]"></div>
+    </div>
   );
 
   return (
-    <div className="relative w-[90vw] max-w-[340px] md:w-[420px] aspect-[4/3] perspective-container mx-auto">
-      <motion.div className="w-full h-full preserve-3d"
-        animate={{ y: [0, -10, 0], rotateZ: [-1, 1, -1], rotateX: [0, 2, 0] }}
-        transition={{ duration: 6, repeat: Infinity }}>
-        
-        <motion.div 
-          initial={{ rotateX: 10, rotateY: 0, scale: 0.9 }}
-          animate={{ rotateX: isOpen ? 5 : 10, scale: isOpen ? 1 : 0.95, y: isOpen ? 40 : 0 }}
-          transition={{ type: "spring", damping: 20 }}
-          className="relative w-full h-full preserve-3d duration-500"
-        >
-          <div className="absolute inset-0 bg-[#c5a059] rounded-b-xl shadow-2xl transform translate-z-[-2px]"></div>
+    <div className="relative w-[90vw] max-w-[340px] md:w-[420px] h-auto flex flex-col items-center justify-center perspective-[1000px]">
+      
+      {/* TOP ROLLER */}
+      <motion.div 
+        className="relative z-50 w-full"
+        initial={{ y: 0 }}
+        animate={{ y: isOpen ? 0 : 0 }} // Stays at top of container relative flow
+      >
+        <ScrollRoller position="top" />
+      </motion.div>
 
-          <motion.div 
-              className="absolute left-3 right-3 bg-white rounded-lg shadow-md overflow-hidden origin-bottom"
-              initial={{ y: 10, zIndex: 5, z: 0, height: "92%" }}
-              animate={{ 
-                  y: showCard ? '-50%' : 10,
-                  height: showCard ? '140%' : '92%', 
-                  zIndex: showCard ? 50 : 5,
-                  scale: showCard ? 1.05 : 1,
-                  z: showCard ? 40 : 1 
-              }}
-              transition={{ delay: 0.5, duration: 1.2, type: "spring", bounce: 0.3 }}
-              style={{ transformStyle: 'preserve-3d' }}
-          >
-              <InvitationCard 
+      {/* THE SCROLL PAPER (Container for InvitationCard) */}
+      <motion.div
+        className="relative w-full bg-[#fffcf5] overflow-hidden shadow-2xl origin-top"
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ 
+            height: isOpen ? '550px' : 0, // Unrolls to this height
+            opacity: 1 
+        }} 
+        transition={{ 
+            duration: 2.5, // Slow, majestic unroll
+            ease: "easeInOut" 
+        }}
+      >
+        {/* Paper Texture Overlay */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none z-10" 
+             style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}>
+        </div>
+
+        {/* Content Inside */}
+        <div className="w-full h-full overflow-hidden">
+            <InvitationCard 
                 guestName={guestName} 
                 onOpenGallery={onOpenGallery} 
-                onOpenMap={onOpenMap} 
-                showDetails={showCard}
-                onBlessing={onBlessing} // Passing it down
-              />
-          </motion.div>
-
-          <div className="absolute inset-0 z-20 pointer-events-none preserve-3d">
-              <div className="absolute top-0 left-0 w-full h-full bg-[#d4af37] clip-path-left z-20 overflow-hidden" style={{ clipPath: 'polygon(0 0, 50% 50%, 0 100%)' }}><ShimmerEffect /></div>
-              <div className="absolute top-0 right-0 w-full h-full bg-[#e6c256] clip-path-right z-20 overflow-hidden" style={{ clipPath: 'polygon(100% 0, 50% 50%, 100% 100%)' }}><ShimmerEffect /></div>
-              <div className="absolute bottom-0 left-0 w-full h-full bg-[#deb849] clip-path-bottom z-30 shadow-inner overflow-hidden" style={{ clipPath: 'polygon(0 100%, 50% 50%, 100% 100%)' }}><ShimmerEffect /></div>
-          </div>
-
-          <motion.div className="absolute top-0 left-0 w-full h-full z-40 origin-top preserve-3d"
-            initial={{ rotateX: 0 }} animate={{ rotateX: isOpen ? 180 : 0 }} transition={{ duration: 0.8, ease: "easeInOut" }}>
-              <div className="absolute inset-0 bg-[#d4af37] backface-hidden overflow-hidden" style={{ clipPath: 'polygon(0 0, 50% 50%, 100% 0)' }}>
-                  <ShimmerEffect />
-                  <div className="absolute top-[25%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30">
-                      <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center relative shadow-2xl transition-transform hover:scale-105"
-                           style={{ background: 'radial-gradient(circle at 35% 35%, #ef4444, #b91c1c, #7f1d1d)', boxShadow: '0 6px 12px rgba(0,0,0,0.5)' }}>
-                          <div className="absolute inset-0 rounded-full border-[1px] border-white/20 opacity-60"></div>
-                          <span className="font-bold text-2xl md:text-3xl relative z-10 text-[#450a0a]">☸</span>
-                      </div>
-                  </div>
-              </div>
-              <div className="absolute inset-0 bg-[#b89542] backface-hidden" style={{ transform: 'rotateX(180deg)', clipPath: 'polygon(0 0, 50% 50%, 100% 0)' }}></div>
-          </motion.div>
-        </motion.div>
+                onOpenMap={onOpenMap}
+                showDetails={showContent}
+                onBlessing={onBlessing}
+            />
+        </div>
       </motion.div>
+
+      {/* BOTTOM ROLLER */}
+      <motion.div 
+        className="relative z-50 w-full"
+        initial={{ y: -5 }} // Starts slightly tucked up
+        animate={{ y: 0 }}
+      >
+        <ScrollRoller position="bottom" />
+      </motion.div>
+
+
+      {/* CLOSED STATE DECORATIONS (The Thread & Seal) */}
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.div 
+            className="absolute z-[60] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
+            exit={{ opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* The Red Thread (Mauli) */}
+            <div className="w-[120%] h-4 bg-red-700 shadow-lg mb-[-10px] relative">
+                 <div className="absolute inset-0 border-y border-red-900/50"></div>
+                 <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_5px,rgba(0,0,0,0.2)_5px,rgba(0,0,0,0.2)_10px)]"></div>
+            </div>
+
+            {/* The Wax Seal */}
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center relative shadow-2xl"
+                  style={{ background: 'radial-gradient(circle at 35% 35%, #ef4444, #b91c1c, #7f1d1d)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
+                <div className="absolute inset-0 rounded-full border-[2px] border-white/20 opacity-60"></div>
+                <div className="w-12 h-12 rounded-full border border-red-900/30 flex items-center justify-center">
+                    <span className="font-bold text-3xl md:text-4xl text-[#450a0a] drop-shadow-md">☸</span>
+                </div>
+            </div>
+            
+            <p className="mt-4 text-amber-200 text-xs font-bold tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+                OPENING...
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 };
