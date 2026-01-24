@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown } from 'lucide-react';
 
-// Make sure your image path is correct here (public folder logic)
-// Since we are using the public folder method now, we don't strictly need to import the image,
-// but we will keep the standard setup.
-
 interface InvitationCardProps {
   guestName: string;
   onOpenGallery: () => void;
@@ -121,7 +117,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 initial="hidden"
                 animate={showDetails ? "visible" : "hidden"}
             >
-                <motion.h3 variants={fadeVariants} className="text-amber-600 tracking-[0.2em] text-[10px] md:text-xs uppercase font-bold">The Dabhade & Shimpi Family</motion.h3>
+                {/* UPDATED: Increased text size from text-[10px] to text-sm */}
+                <motion.h3 variants={fadeVariants} className="text-amber-600 tracking-[0.2em] text-sm md:text-base uppercase font-bold">
+                    The Dabhade & Shimpi Family
+                </motion.h3>
+                
                 <motion.div variants={fadeVariants} className="w-12 h-0.5 bg-amber-300 mx-auto"></motion.div>
                 <motion.p variants={fadeVariants} className="text-xs md:text-sm italic text-gray-500">Cordially invites</motion.p>
                 
@@ -286,14 +286,13 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </button>
             </motion.div>
 
-            {/* NEW: Sticky Scroll Indicator */}
-            {/* This element sticks to the bottom of the scroll area to remind users to scroll */}
+            {/* Sticky Scroll Indicator */}
             <motion.div 
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1, y: [0, 5, 0] }}
                 transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
                 className="sticky bottom-0 left-0 right-0 flex flex-col items-center justify-center text-amber-700/60 pb-1 z-0 pointer-events-none mt-4"
-                data-hide-download // This ensures it doesn't appear in screenshots/downloads
+                data-hide-download 
             >
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">Scroll Down</span>
                 <ChevronsDown size={16} />
