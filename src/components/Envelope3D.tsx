@@ -30,20 +30,23 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
     };
   }, [onOpenComplete]);
 
-  // RESTORED GOLDEN ROLLER (User wanted richness back)
+  // ROYAL GOLDEN ROLLER (Rich 3D Texture)
   const ScrollRoller = ({ position }: { position: 'top' | 'bottom' }) => (
     <div 
       className={`absolute left-1/2 -translate-x-1/2 w-[105%] max-w-[380px] h-12 md:h-16 z-50 rounded-full shadow-2xl flex items-center justify-center
         ${position === 'top' ? '-top-6 md:-top-8' : '-bottom-6 md:-bottom-8'}
       `}
       style={{
-        background: 'linear-gradient(90deg, #8B4513 0%, #CD853F 10%, #FFD700 40%, #FDB931 50%, #FFD700 60%, #CD853F 90%, #8B4513 100%)',
-        boxShadow: '0px 10px 20px rgba(0,0,0,0.4), inset 0px 2px 5px rgba(255,255,255,0.3)'
+        background: 'linear-gradient(90deg, #8B4513 0%, #B8860B 20%, #FFD700 50%, #B8860B 80%, #8B4513 100%)', // Premium Gold Gradient
+        boxShadow: '0px 10px 25px rgba(0,0,0,0.6), inset 0px 2px 4px rgba(255,255,255,0.4)'
       }}
     >
-      <div className="absolute left-1 top-1/2 -translate-y-1/2 w-3 h-8 md:h-12 bg-amber-800 rounded-sm shadow-inner border-r border-amber-600"></div>
-      <div className="absolute right-1 top-1/2 -translate-y-1/2 w-3 h-8 md:h-12 bg-amber-800 rounded-sm shadow-inner border-l border-amber-600"></div>
-      <div className="w-full h-[2px] bg-white/40 blur-[1px]"></div>
+      {/* Decorative Dark Gold Knobs */}
+      <div className="absolute left-1 top-1/2 -translate-y-1/2 w-3 h-8 md:h-12 bg-[#5d3211] rounded-sm shadow-inner border-r border-[#8B4513]"></div>
+      <div className="absolute right-1 top-1/2 -translate-y-1/2 w-3 h-8 md:h-12 bg-[#5d3211] rounded-sm shadow-inner border-l border-[#8B4513]"></div>
+      
+      {/* Metallic Shine Line */}
+      <div className="w-full h-[1px] bg-white/40 blur-[1px]"></div>
     </div>
   );
 
@@ -55,15 +58,15 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
         <ScrollRoller position="top" />
       </motion.div>
 
-      {/* THE SCROLL PAPER */}
+      {/* THE SCROLL PAPER - Creamy Rich Texture */}
       <motion.div
         className="relative w-full bg-[#fffcf5] overflow-hidden shadow-2xl origin-top"
         initial={{ height: 0, opacity: 0 }}
-        animate={{ height: isOpen ? '550px' : 0, opacity: 1 }} 
+        animate={{ height: isOpen ? '580px' : 0, opacity: 1 }} 
         transition={{ duration: 2.5, ease: "easeInOut" }}
       >
         {/* Paper Texture Overlay */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none z-10" 
+        <div className="absolute inset-0 opacity-20 pointer-events-none z-10" 
              style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cream-paper.png")' }}>
         </div>
 
@@ -77,7 +80,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
         <ScrollRoller position="bottom" />
       </motion.div>
 
-      {/* CLOSED STATE - BLUE SEAL WITH CHAKRA */}
+      {/* CLOSED STATE - ROYAL BLUE SEAL */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
@@ -87,14 +90,14 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
           >
             {/* Wax Seal */}
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center relative shadow-2xl"
-                  style={{ background: 'radial-gradient(circle at 35% 35%, #1d4ed8, #1e3a8a, #172554)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
+                  style={{ background: 'radial-gradient(circle at 35% 35%, #2563eb, #1e40af, #172554)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
                 <div className="absolute inset-0 rounded-full border-[2px] border-white/20 opacity-60"></div>
-                <div className="w-12 h-12 rounded-full border border-blue-300/30 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full border border-blue-200/30 flex items-center justify-center">
                     <span className="font-bold text-3xl md:text-4xl text-blue-100 drop-shadow-md">☸️</span>
                 </div>
             </div>
             
-            <p className="mt-4 text-amber-200 text-xs font-bold tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
+            <p className="mt-4 text-amber-100 text-xs font-bold tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-amber-500/30">
                 OPENING...
             </p>
           </motion.div>
