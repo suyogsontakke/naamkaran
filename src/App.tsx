@@ -1,163 +1,142 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { InputScreen } from './components/InputScreen';
 import { Envelope3D } from './components/Envelope3D';
-import { FloatingPetals } from './components/FloatingPetals';
-import { ThreeDElements } from './components/ThreeDElements';
-import { PhotoGallery } from './components/PhotoGallery';
-import { MapModal } from './components/MapModal';
-import { Confetti } from './components/Confetti';
 import { Volume2, VolumeX } from 'lucide-react';
 
-const App: React.FC = () => {
-  const [guestName, setGuestName] = useState<string | null>(null);
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-  const [isMapOpen, setIsMapOpen] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
-  
-  // Audio State
+// Simple Landing Screen Component inside App for simplicity
+const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
+  const [name, setName] = useState('');
+  return (
+    <div className="flex flex-col items-center z-10 p-6 text-center space-y-6 max-w-md w-full">
+        {/* Aesthetic Logo/Icon */}
+        <motion.div 
+            initial={{ opacity: 0, y: -20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 1 }}
+            className="w-20 h-20 rounded-full border border-blue-300/30 flex items-center justify-center bg-blue-950/40 backdrop-blur-sm shadow-[0_0_30px_rgba(59,130,246,0.3)]"
+        >
+            <span className="text-4xl">☸️</span>
+        </motion.div>
+
+        <motion.h1 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ delay: 0.3 }}
+            className="text-3xl md:text-5xl font-['Cinzel'] text-blue-100 tracking-widest font-bold drop-shadow-lg"
+        >
+            NAMO BUDDHAY
+        </motion.h1>
+
+        <motion.p 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ delay: 0.5 }}
+            className="text-blue-200/80 font-['Cormorant_Garamond'] text-lg md:text-xl italic"
+        >
+            "A soul has arrived, a journey begins."
+        </motion.p>
+
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            transition={{ delay: 0.8 }}
+            className="w-full space-y-4"
+        >
+            <input 
+                type="text" 
+                placeholder="Enter your name..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-blue-950/30 border border-blue-400/30 text-blue-100 placeholder:text-blue-400/50 px-6 py-4 rounded-full text-center font-['Cormorant_Garamond'] text-xl focus:outline-none focus:border-blue-300 transition-all"
+            />
+            <button 
+                onClick={() => name && onEnter(name)}
+                className="w-full bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-800 hover:to-indigo-800 text-blue-100 border border-blue-700/50 px-8 py-3 rounded-full font-['Cinzel'] font-bold tracking-widest transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!name}
+            >
+                OPEN INVITATION
+            </button>
+        </motion.div>
+    </div>
+  );
+};
+
+function App() {
+  const [step, setStep] = useState<'landing' | 'envelope'>('landing');
+  const [guestName, setGuestName] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    const audioUrl = '/song.mp3'; 
-    audioRef.current = new Audio(audioUrl);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.5;
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
+  const handleNameSubmit = (name: string) => {
+    setGuestName(name);
+    setStep('envelope');
+    // Try to play music
+    if (audioRef.current && !isPlaying) {
+        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
+  };
 
   const toggleMusic = () => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch(error => {
-          console.log("Audio play failed:", error);
-        });
-      }
+      if (isPlaying) audioRef.current.pause();
+      else audioRef.current.play();
       setIsPlaying(!isPlaying);
     }
   };
 
-  const handleNameSubmit = (name: string) => {
-    setGuestName(name);
-    if (audioRef.current && !isPlaying) {
-        audioRef.current.play().catch(() => {});
-        setIsPlaying(true);
-    }
-  };
-
-  const triggerConfetti = useCallback(() => {
-    setShowConfetti(true);
-    const timer = setTimeout(() => {
-        setShowConfetti(false);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <div className="min-h-[100dvh] w-full bg-[#0f172a] relative overflow-hidden flex flex-col items-center justify-center">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1e293b] via-[#0f172a] to-black z-0"></div>
+    // DARK AESTHETIC BACKGROUND (Deep Indigo/Slate)
+    <div className="min-h-screen w-full bg-[#0a0f1c] flex flex-col items-center justify-center overflow-hidden relative">
       
-      <div className="absolute inset-0 opacity-20 z-0" 
-           style={{ 
-             backgroundImage: 'linear-gradient(rgba(212, 175, 55, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.1) 1px, transparent 1px)', 
-             backgroundSize: '40px 40px',
-             transform: 'perspective(500px) rotateX(60deg) translateY(100px) scale(2)'
-           }}>
+      {/* Subtle Gradient Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/20 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-900/20 blur-[120px] rounded-full pointer-events-none"></div>
+
+      {/* Floating Particles (Stars) */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+             <div 
+                key={i} 
+                className="absolute bg-white rounded-full animate-pulse"
+                style={{
+                    width: Math.random() * 3 + 'px',
+                    height: Math.random() * 3 + 'px',
+                    top: Math.random() * 100 + '%',
+                    left: Math.random() * 100 + '%',
+                    animationDuration: Math.random() * 3 + 2 + 's',
+                    opacity: Math.random()
+                }}
+             ></div>
+          ))}
       </div>
 
-      <FloatingPetals />
-      <ThreeDElements />
-      
-      {showConfetti && <Confetti />}
+      <audio ref={audioRef} loop src="/bg-music.mp3" />
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center min-h-[100dvh]">
-        
-        <AnimatePresence mode="wait">
-          {!guestName ? (
-            <InputScreen key="input" onComplete={handleNameSubmit} />
-          ) : (
-            <motion.div
-              key="envelope"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              className="flex flex-col items-center w-full justify-center flex-1 py-4"
-            >
-              <div className="text-center mb-6 relative z-20">
-                 <motion.h2 
-                    initial={{ y: -20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 1 }}
-                    className="text-amber-100/80 font-['Cinzel'] tracking-widest text-xs md:text-sm bg-black/20 px-4 py-1 rounded-full backdrop-blur-sm"
-                 >
-                    YOU ARE CORDIALLY INVITED
-                 </motion.h2>
-              </div>
+      {/* Music Toggle */}
+      <button 
+        onClick={toggleMusic}
+        className="absolute top-6 right-6 z-[100] text-blue-200/50 hover:text-blue-100 transition-colors"
+      >
+        {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
+      </button>
 
-              <div className="relative z-30">
-                 <Envelope3D 
-                    guestName={guestName} 
-                    onOpenGallery={() => setIsGalleryOpen(true)}
-                    onOpenMap={() => setIsMapOpen(true)}
-                    onOpenComplete={triggerConfetti}
-                    onBlessing={triggerConfetti} // Pass the blessing trigger here
-                 />
-              </div>
-
-              <motion.div 
-                 initial={{ opacity: 0 }}
-                 animate={{ opacity: 1 }}
-                 transition={{ delay: 3, duration: 1 }}
-                 className="fixed bottom-4 left-0 right-0 text-center px-6 pb-4 pointer-events-none"
-              >
-                  <div className="bg-[#0f172a]/80 backdrop-blur-sm p-4 rounded-2xl border border-white/5 inline-block max-w-lg">
-                      <p className="text-amber-200/70 text-[10px] md:text-xs leading-relaxed font-light italic">
-                          "Just as the soft rains fill the streams, pour into the rivers, and join together in the oceans, so may the power of every moment of your goodness flow forth to awaken and heal all beings."
-                      </p>
-                      <p className="text-amber-500 mt-2 text-[8px] md:text-[10px] uppercase tracking-widest font-bold">- Buddhist Blessing</p>
-                  </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <AnimatePresence>
-        {isGalleryOpen && (
-            <PhotoGallery onClose={() => setIsGalleryOpen(false)} />
+      <AnimatePresence mode="wait">
+        {step === 'landing' ? (
+          <motion.div key="landing" exit={{ opacity: 0, y: -20 }} className="w-full flex justify-center">
+            <LandingScreen onEnter={handleNameSubmit} />
+          </motion.div>
+        ) : (
+          <motion.div key="envelope" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex justify-center z-10">
+            <Envelope3D 
+              guestName={guestName} 
+              onOpenGallery={() => {}} 
+              onOpenMap={() => window.open("https://maps.google.com", "_blank")} 
+            />
+          </motion.div>
         )}
       </AnimatePresence>
-
-      <AnimatePresence>
-        {isMapOpen && (
-            <MapModal onClose={() => setIsMapOpen(false)} />
-        )}
-      </AnimatePresence>
-
-      <div className="absolute top-4 right-4 z-50">
-        <button 
-          onClick={toggleMusic}
-          className={`flex items-center gap-2 text-[10px] md:text-xs border rounded-full px-3 py-1.5 uppercase tracking-wider backdrop-blur-sm transition-all shadow-lg ${
-            isPlaying 
-              ? 'text-amber-400 border-amber-400 bg-amber-900/30' 
-              : 'text-amber-500/50 border-amber-500/30 bg-black/20 hover:text-amber-400 hover:border-amber-400'
-          }`}
-        >
-            {isPlaying ? <Volume2 size={14} /> : <VolumeX size={14} />}
-            <span className="hidden md:inline">{isPlaying ? 'Music On' : 'Music Off'}</span>
-        </button>
-      </div>
     </div>
   );
-};
+}
 
 export default App;
