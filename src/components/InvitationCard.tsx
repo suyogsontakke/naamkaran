@@ -91,7 +91,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 flex flex-col items-center text-center px-4 pb-6 pt-2 relative overflow-y-auto custom-scrollbar transition-all duration-500 origin-center">
         
-        {/* Sticky Language Toggle - Clean & Solid Background */}
+        {/* Sticky Language Toggle */}
         <div className="sticky top-0 z-50 w-full flex justify-end pb-2 pointer-events-none">
             <button 
                 onClick={() => setIsMarathi(!isMarathi)}
@@ -102,10 +102,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </button>
         </div>
 
-        {/* Removed the Corner Decorations (The Absolute Divs) to clean up the UI */}
+        {/* RESTORED: Corner Decorations (Yellow Borders) */}
+        <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
+        <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
+        <div className="absolute bottom-2 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
+        <div className="absolute bottom-2 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
 
-        {/* Added mt-4 to push text down away from the language button */}
-        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto mt-4">
+        {/* UPDATED: Added 'mt-10' to create space between the scroll roller and the content */}
+        <div className="relative z-10 flex flex-col h-full w-full max-w-[90%] mx-auto mt-10">
             
             <motion.div className="space-y-1" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 <motion.h3 variants={fadeVariants} className={`text-amber-600 tracking-[0.2em] uppercase font-bold ${isMarathi ? 'text-xs font-serif' : 'text-sm md:text-base'}`}>
@@ -158,7 +162,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 ))}
             </motion.div>
 
-            {/* Details Section - Cleaned up borders */}
+            {/* Details Section */}
             <motion.div className="bg-white/60 p-3 md:p-4 rounded-xl border border-amber-100 shadow-sm space-y-3 mb-2"
                 variants={containerVariants} initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 
