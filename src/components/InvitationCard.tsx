@@ -63,7 +63,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${startDate}/${endDate}`;
   };
 
-  // Variants
   const containerVariants: Variants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.2, delayChildren: 2.2 } } };
   const itemVariants: Variants = { hidden: { opacity: 0, y: 10, x: -5 }, visible: { opacity: 1, y: 0, x: 0, transition: { type: "spring", stiffness: 100, damping: 12 } } };
   const babyTitleVariants: Variants = { hidden: { scale: 0.8, rotateX: 40, opacity: 0, y: 20 }, visible: { scale: 1, rotateX: 0, opacity: 1, y: 0, transition: { delay: 0.5, duration: 1.0, type: "spring", bounce: 0.5 } } };
@@ -89,23 +88,16 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   };
 
   return (
-    // Outer scroll container
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative">
         
-        {/* INNER CONTENT WRAPPER 
-            'min-h-full' ensures this div grows to fit all text.
-            'relative' allows us to position borders at the absolute bottom of THIS div.
-        */}
-        <div className="relative min-h-full flex flex-col w-full max-w-[90%] mx-auto pb-6">
+        {/* INNER CONTENT WRAPPER */}
+        <div className="relative min-h-full flex flex-col w-full max-w-[90%] mx-auto pb-8">
 
-            {/* TOP DECORATIONS (Absolute to the wrapper) */}
-            <div className="absolute top-2 -left-4 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
-            <div className="absolute top-2 -right-4 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
+            {/* TOP DECORATIONS (Inside visible area) */}
+            <div className="absolute top-2 left-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
+            <div className="absolute top-2 right-2 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
 
-            {/* LANGUAGE BUTTON 
-                Positioned inside the flow with 'mt-6' to give breathing room from the top roller.
-                'self-end' pushes it to the right.
-            */}
+            {/* LANGUAGE BUTTON */}
             <div className="w-full flex justify-end mt-6 mb-2 px-1 relative z-50">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
@@ -151,7 +143,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.p>
             </div>
 
-            {/* COUNTDOWN TIMER */}
+            {/* COUNTDOWN */}
             <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: showDetails ? 1 : 0, scale: showDetails ? 1 : 0.9 }}
@@ -168,7 +160,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 ))}
             </motion.div>
 
-            {/* Details Section */}
+            {/* DETAILS */}
             <motion.div className="bg-white/60 p-3 md:p-4 rounded-xl border border-amber-100 shadow-sm space-y-3 mb-2"
                 variants={containerVariants} initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 
@@ -210,7 +202,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.div>
             </motion.div>
 
-            {/* BUTTONS SECTION (Push to bottom of flex container) */}
+            {/* BUTTONS */}
             <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
@@ -237,9 +229,9 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <ChevronsDown size={16} />
             </motion.div>
 
-            {/* BOTTOM DECORATIONS (Absolute to the GROWING wrapper) */}
-            <div className="absolute bottom-0 -left-4 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
-            <div className="absolute bottom-0 -right-4 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
+            {/* BOTTOM DECORATIONS (Inside visible area) */}
+            <div className="absolute bottom-0 left-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
+            <div className="absolute bottom-0 right-2 w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
 
         </div>
     </div>
