@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe, Heart } from 'lucide-react';
+import { motion, Variants } from 'framer-motion';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
@@ -15,7 +15,6 @@ const DhammaChakraIcon = () => (
   <svg viewBox="0 0 100 100" className="w-8 h-8 md:w-10 md:h-10 mx-auto text-amber-600 fill-current drop-shadow-sm mb-1">
     <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" />
     <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="3" />
-    {/* Spokes */}
     {[...Array(8)].map((_, i) => (
       <line 
         key={i} 
@@ -40,18 +39,38 @@ const PalnaIcon = () => (
   </svg>
 );
 
-interface FlyingHeart {
-  id: number;
-  x: number;
-  color: string;
-  scale: number;
-}
+// New Component: Panchsheel Toran (Buddhist Flag Bunting)
+const PanchsheelToran = () => {
+  // The 5 colors of the Buddhist Flag
+  const colors = ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C']; // Blue, Yellow, Red, White, Orange
+  
+  return (
+    <div className="absolute top-0 left-0 w-full flex justify-center -mt-2 z-0 overflow-hidden opacity-90 pointer-events-none">
+       {/* Rope */}
+       <div className="absolute top-0 w-full h-[2px] bg-amber-800/30"></div>
+       
+       {/* Repeating Flags */}
+       <div className="flex gap-1 md:gap-2">
+         {[...Array(15)].map((_, i) => (
+           <div 
+             key={i} 
+             className="w-6 h-8 md:w-8 md:h-10 rounded-b-full shadow-sm transform origin-top animate-pulse"
+             style={{ 
+               backgroundColor: colors[i % 5],
+               animationDuration: `${3 + Math.random()}s`, // Random sway speed
+               border: colors[i % 5] === '#FFFFFF' ? '1px solid #f3f4f6' : 'none'
+             }}
+           ></div>
+         ))}
+       </div>
+    </div>
+  );
+};
 
 export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenMap, showDetails = true, onBlessing }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [hearts, setHearts] = useState<FlyingHeart[]>([]);
 
   // Translations
   const t = {
@@ -126,26 +145,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     if (onBlessing) onBlessing();
   };
 
-  // HEART REACTION LOGIC
-  const triggerHeart = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const newHeart: FlyingHeart = {
-      id: Date.now(),
-      x: Math.random() * 40 - 20, 
-      color: ['#ef4444', '#ec4899', '#f43f5e', '#e11d48'][Math.floor(Math.random() * 4)], 
-      scale: 0.8 + Math.random() * 0.5 
-    };
-    setHearts(prev => [...prev, newHeart]);
-    setTimeout(() => {
-        setHearts(prev => prev.filter(h => h.id !== newHeart.id));
-    }, 2000);
-  };
-
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col">
         
-        {/* INNER WRAPPER - Adjusted padding (pb-8) since Marquee is gone */}
+        {/* INNER WRAPPER - Adjusted padding */}
         <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-16">
+
+            {/* NEW FEATURE: PANCHSHEEL TORAN (Buddhist Flag Decoration) */}
+            <PanchsheelToran />
 
             {/* LANGUAGE BUTTON */}
             <div className="w-full flex justify-end mb-2 px-1 relative z-50">
@@ -319,41 +326,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             </motion.div>
 
         </div>
-
-        {/* FLOATING HEART REACTION BUTTON */}
-        <div className="absolute bottom-20 right-4 z-[100]">
-             <button 
-                onClick={triggerHeart}
-                className="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-transform border-2 border-white"
-             >
-                <Heart size={20} fill="currentColor" />
-             </button>
-        </div>
-
-        {/* HEARTS CONTAINER */}
-        <div className="absolute bottom-24 right-4 w-12 h-[300px] pointer-events-none z-[90] overflow-visible">
-            <AnimatePresence>
-                {hearts.map((heart) => (
-                    <motion.div
-                        key={heart.id}
-                        initial={{ opacity: 1, y: 0, x: 0, scale: 0 }}
-                        animate={{ 
-                            opacity: 0, 
-                            y: -250, 
-                            x: heart.x, 
-                            scale: heart.scale 
-                        }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 2, ease: "easeOut" }}
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 text-rose-500 drop-shadow-sm"
-                        style={{ color: heart.color }}
-                    >
-                        <Heart fill="currentColor" size={24} />
-                    </motion.div>
-                ))}
-            </AnimatePresence>
-        </div>
-
     </div>
   );
 };
