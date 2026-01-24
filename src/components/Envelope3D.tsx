@@ -86,7 +86,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
                   style={{ background: 'radial-gradient(circle at 35% 35%, #ef4444, #b91c1c, #7f1d1d)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
                 <div className="absolute inset-0 rounded-full border-[2px] border-white/20 opacity-60"></div>
                 <div className="w-12 h-12 rounded-full border border-red-900/30 flex items-center justify-center">
-                    <span className="font-bold text-3xl md:text-4xl text-[#450a0a] drop-shadow-md">ॐ</span>
+                    <span className="font-bold text-3xl md:text-4xl text-[#450a0a] drop-shadow-md">☸</span>
                 </div>
             </div>
             
