@@ -2,48 +2,65 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Envelope3D } from './components/Envelope3D';
 import { MapModal } from './components/MapModal';
-import { PhotoGallery } from './components/PhotoGallery'; // Import the Gallery
-import { Volume2, VolumeX } from 'lucide-react';
+import { PhotoGallery } from './components/PhotoGallery'; 
+import { Volume2, VolumeX, Flower2 } from 'lucide-react';
 
-// Landing Screen Component
+// Landing Screen with Rich Typography
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
   return (
     <div className="flex flex-col items-center z-10 p-6 text-center space-y-6 max-w-md w-full">
+        {/* Animated Dhamma Chakra Logo */}
         <motion.div 
             initial={{ opacity: 0, y: -20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 1 }}
-            className="w-20 h-20 rounded-full border border-amber-300/30 flex items-center justify-center bg-indigo-950/40 backdrop-blur-sm shadow-[0_0_30px_rgba(251,191,36,0.2)]"
+            className="w-24 h-24 rounded-full border-2 border-amber-400/50 flex items-center justify-center bg-indigo-950/60 backdrop-blur-md shadow-[0_0_40px_rgba(251,191,36,0.3)]"
         >
-            <span className="text-4xl">☸️</span>
+            <span className="text-5xl drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">☸️</span>
         </motion.div>
 
+        {/* NAMO BUDDHAY */}
         <motion.h1 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
             transition={{ delay: 0.3 }}
-            className="text-3xl md:text-5xl font-['Cinzel'] text-amber-100 tracking-widest font-bold drop-shadow-lg"
+            className="text-4xl md:text-5xl font-['Cinzel'] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 tracking-widest font-bold drop-shadow-sm"
         >
             NAMO BUDDHAY
         </motion.h1>
 
+        {/* THE RESTORED MESSAGE */}
+        <motion.div
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ delay: 0.6 }}
+            className="space-y-2"
+        >
+            <p className="text-amber-100/90 font-['Great_Vibes'] text-3xl tracking-wide">
+                "A soul has arrived..."
+            </p>
+            <p className="text-indigo-200 font-['Cinzel'] text-xs tracking-[0.3em] uppercase opacity-80">
+                A Journey Begins
+            </p>
+        </motion.div>
+
         <motion.div 
             initial={{ opacity: 0, scale: 0.9 }} 
             animate={{ opacity: 1, scale: 1 }} 
-            transition={{ delay: 0.8 }}
-            className="w-full space-y-4"
+            transition={{ delay: 0.9 }}
+            className="w-full space-y-4 pt-4"
         >
             <input 
                 type="text" 
-                placeholder="Enter your name..."
+                placeholder="Enter Guest Name..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full bg-indigo-950/30 border border-amber-400/30 text-amber-100 placeholder:text-amber-400/50 px-6 py-4 rounded-full text-center text-xl focus:outline-none focus:border-amber-300 transition-all"
+                className="w-full bg-indigo-950/40 border border-amber-500/30 text-amber-50 placeholder:text-amber-200/30 px-6 py-4 rounded-full text-center text-xl font-serif focus:outline-none focus:border-amber-400 focus:bg-indigo-900/50 transition-all shadow-inner"
             />
             <button 
                 onClick={() => name && onEnter(name)}
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-white border border-amber-400/50 px-8 py-3 rounded-full font-bold tracking-widest transition-all shadow-lg active:scale-95 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white border-t border-amber-300/50 px-8 py-4 rounded-full font-['Cinzel'] font-bold tracking-[0.2em] transition-all shadow-[0_5px_15px_rgba(245,158,11,0.3)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!name}
             >
                 OPEN INVITATION
@@ -53,12 +70,32 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   );
 };
 
+// Flower Animation Component
+const PetalShower = () => {
+    return (
+        <div className="fixed inset-0 pointer-events-none z-[9999]">
+            {[...Array(15)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    initial={{ y: -50, x: Math.random() * window.innerWidth, opacity: 1, rotate: 0 }}
+                    animate={{ y: window.innerHeight + 100, rotate: 360 }}
+                    transition={{ duration: 3 + Math.random() * 2, ease: "linear" }}
+                    className="absolute text-rose-400/80"
+                >
+                    <Flower2 size={20 + Math.random() * 20} />
+                </motion.div>
+            ))}
+        </div>
+    );
+};
+
 function App() {
   const [step, setStep] = useState<'landing' | 'envelope'>('landing');
   const [guestName, setGuestName] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false); // STATE FOR GALLERY
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false); 
+  const [showPetals, setShowPetals] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleNameSubmit = (name: string) => {
@@ -77,18 +114,21 @@ function App() {
     }
   };
 
+  const handleBlessing = () => {
+      setShowPetals(true);
+      setTimeout(() => setShowPetals(false), 4000);
+  };
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-[#0f172a] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative">
+    <div className="min-h-screen w-full bg-gradient-to-b from-[#020617] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative">
       
-      {/* Background Particles */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-          {[...Array(20)].map((_, i) => (
-             <div 
-                key={i} 
-                className="absolute bg-amber-100 rounded-full animate-pulse"
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 opacity-40 pointer-events-none">
+          {[...Array(25)].map((_, i) => (
+             <div key={i} className="absolute bg-amber-100 rounded-full animate-pulse shadow-[0_0_5px_white]"
                 style={{
-                    width: Math.random() * 3 + 'px',
-                    height: Math.random() * 3 + 'px',
+                    width: Math.random() * 2 + 'px',
+                    height: Math.random() * 2 + 'px',
                     top: Math.random() * 100 + '%',
                     left: Math.random() * 100 + '%',
                     animationDuration: Math.random() * 3 + 2 + 's',
@@ -100,16 +140,18 @@ function App() {
 
       <audio ref={audioRef} loop src="/bg-music.mp3" />
 
-      <button 
-        onClick={toggleMusic}
-        className="absolute top-6 right-6 z-[100] text-amber-200/50 hover:text-amber-100 transition-colors"
-      >
+      <button onClick={toggleMusic} className="absolute top-6 right-6 z-[100] text-amber-200/50 hover:text-amber-100 transition-colors">
         {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
       </button>
 
       {/* MODALS */}
       <MapModal isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} />
       <PhotoGallery isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
+      
+      {/* EFFECT */}
+      <AnimatePresence>
+        {showPetals && <PetalShower />}
+      </AnimatePresence>
 
       <AnimatePresence mode="wait">
         {step === 'landing' ? (
@@ -118,11 +160,12 @@ function App() {
           </motion.div>
         ) : (
           <motion.div key="envelope" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex justify-center z-10">
-            {/* Connected BOTH buttons now */}
+            {/* PASSING DOWN ALL FUNCTIONS */}
             <Envelope3D 
               guestName={guestName} 
               onOpenGallery={() => setIsGalleryOpen(true)} 
               onOpenMap={() => setIsMapOpen(true)} 
+              onBlessing={handleBlessing}
             />
           </motion.div>
         )}
