@@ -10,7 +10,6 @@ interface InvitationCardProps {
   onBlessing?: () => void; 
 }
 
-// Buddhist Dhamma Chakra (Royal Blue & Gold)
 const DhammaChakraIcon = () => (
   <svg viewBox="0 0 100 100" className="w-8 h-8 md:w-10 md:h-10 mx-auto text-blue-800 fill-current drop-shadow-sm mb-1">
     <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" />
@@ -22,7 +21,6 @@ const DhammaChakraIcon = () => (
   </svg>
 );
 
-// Panchsheel Toran (Flag)
 const PanchsheelToran = () => {
   const colors = ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C']; 
   return (
@@ -31,7 +29,7 @@ const PanchsheelToran = () => {
        <div className="flex gap-1">
          {[...Array(15)].map((_, i) => (
            <div key={i} className="w-6 h-8 md:w-8 md:h-10 rounded-b-lg shadow-md transform origin-top animate-pulse"
-             style={{ backgroundColor: colors[i % 5], animationDuration: `${3 + Math.random()}s`, border: '1px solid rgba(0,0,0,0.1)' }}></div>
+             style={{ backgroundColor: colors[i % 5], animationDuration: `${3 + Math.random()}s` }}></div>
          ))}
        </div>
     </div>
@@ -111,31 +109,27 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
   const handleBlessing = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (onBlessing) onBlessing();
+    if (onBlessing) onBlessing(); // Triggers the flower animation
   };
 
   return (
-    // ROYAL CARD: Cream Background with Double Gold Border
-    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[12px] border-double border-amber-200 shadow-[inset_0_0_40px_rgba(251,191,36,0.1)]">
+    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[8px] border-double border-amber-200/50">
         
         <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-16">
 
             <PanchsheelToran />
 
-            {/* Language Button - Gold & Blue */}
             <div className="w-full flex justify-end mb-2 px-1 relative z-50">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
-                    className="flex items-center gap-2 bg-white text-blue-900 border border-amber-300 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-md transition-all active:scale-95 hover:bg-amber-50"
+                    className="flex items-center gap-2 bg-white/80 backdrop-blur-sm text-blue-900 border border-amber-300 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-md transition-all active:scale-95 hover:bg-amber-50"
                 >
                     <Globe size={12} className="text-amber-600" /> 
                     <span className="tracking-wide">{isMarathi ? "Switch to English" : "मराठी मध्ये वाचा"}</span>
                 </button>
             </div>
 
-            {/* CONTENT */}
             <motion.div className="space-y-1 text-center" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
-                
                 <motion.div variants={fadeVariants} className="flex flex-col items-center mb-2">
                     <DhammaChakraIcon />
                     <span className="text-blue-900 font-bold uppercase tracking-widest text-xs md:text-sm drop-shadow-sm">{t.greeting}</span>
@@ -165,7 +159,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     {t.ceremony}
                 </motion.p>
                 
-                {/* BABY BOY - Royal Blue Gradient */}
                 <motion.div 
                     className="relative perspective-[500px] py-1 cursor-pointer" 
                     variants={babyTitleVariants} 
@@ -185,7 +178,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.p>
             </div>
 
-            {/* COUNTDOWN - PREMIUM 3D BOXES */}
             <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: showDetails ? 1 : 0, scale: showDetails ? 1 : 0.9 }}
@@ -194,7 +186,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
             >
                 {Object.entries(timeLeft).map(([unit, value]) => (
                     <div key={unit} className="flex flex-col items-center">
-                        <div className="bg-gradient-to-b from-amber-50 to-amber-100 text-blue-900 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-lg shadow-[0_4px_0_#d97706] border border-amber-200">
+                        <div className="bg-gradient-to-b from-amber-50 to-amber-100 text-blue-900 w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-bold text-lg shadow-[0_3px_0_#d97706] border border-amber-200">
                             {value}
                         </div>
                         <span className="text-[9px] uppercase mt-2 text-slate-500 font-bold">{unit}</span>
@@ -202,7 +194,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 ))}
             </motion.div>
 
-            {/* DETAILS CARD - GLASS & GOLD STYLE */}
             <motion.div className="bg-white/90 p-3 md:p-4 rounded-xl border border-amber-200 shadow-md space-y-3 mb-2"
                 variants={containerVariants} initial="hidden" animate={showDetails ? "visible" : "hidden"}>
                 
@@ -229,10 +220,10 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* MAP CARD - Interactive & Styled */}
+                {/* FIXED: VENUE CARD (Clean, No Yellow BG) */}
                 <motion.div 
                     variants={itemVariants} 
-                    className="flex items-center gap-3 text-left cursor-pointer hover:bg-blue-50/50 p-2 -mx-1.5 rounded-lg transition-colors group relative border border-transparent hover:border-blue-200"
+                    className="flex items-center gap-3 text-left cursor-pointer p-1 -mx-1 rounded-lg transition-colors group relative border border-transparent hover:border-blue-200"
                     onClick={(e) => {
                         e.stopPropagation();
                         if (onOpenMap) onOpenMap();
@@ -241,18 +232,17 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <div className="p-1.5 md:p-2 bg-blue-100 rounded-full text-blue-700 shrink-0"><MapPin size={14} /></div>
                     <div className="flex-1">
                         <div className="flex justify-between items-center">
-                            <p className={`text-[10px] text-slate-500 uppercase font-bold group-hover:text-blue-700 ${isMarathi ? 'font-serif' : ''}`}>{t.venueLabel}</p>
+                            {/* Removed group-hover text color change to keep it clean */}
+                            <p className={`text-[10px] text-slate-500 uppercase font-bold ${isMarathi ? 'font-serif' : ''}`}>{t.venueLabel}</p>
                             <ExternalLink size={10} className="text-amber-500 opacity-0 group-hover:opacity-100" />
                         </div>
+                        {/* Clean Text, no extra styling */}
                         <p className={`text-xs md:text-sm font-semibold text-slate-800 leading-tight ${isMarathi ? 'font-serif' : ''}`}>{t.venueValue}</p>
                     </div>
-                    <span className="absolute right-2 top-0 text-[9px] text-blue-700 opacity-0 group-hover:opacity-100 transition-opacity font-bold bg-blue-100 px-1.5 py-0.5 rounded-full shadow-sm">
-                        {t.map}
-                    </span>
                 </motion.div>
             </motion.div>
 
-            {/* BUTTONS - 3D Clickable Style */}
+            {/* FIXED: BUTTONS (Middle Button Restored) */}
             <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
@@ -261,10 +251,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
+                {/* Blessing/Flower Button restored */}
                 <button onClick={handleBlessing}
-                    className="w-9 h-9 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-300 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform"
+                    className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-300 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform"
                     title="Shower Blessings">
-                    <Flower2 size={16} />
+                    <Flower2 size={18} />
                 </button>
 
                 <button onClick={handleDownload} disabled={isDownloading}
