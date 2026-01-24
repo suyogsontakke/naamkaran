@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe, Heart } from 'lucide-react';
 
@@ -9,6 +9,26 @@ interface InvitationCardProps {
   showDetails?: boolean;
   onBlessing?: () => void; 
 }
+
+// Custom Dhamma Chakra Icon
+const DhammaChakraIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-8 h-8 md:w-10 md:h-10 mx-auto text-amber-600 fill-current drop-shadow-sm mb-1">
+    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="4" />
+    <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="3" />
+    {/* Spokes */}
+    {[...Array(8)].map((_, i) => (
+      <line 
+        key={i} 
+        x1="50" y1="50" 
+        x2={50 + 45 * Math.cos((i * 45) * (Math.PI / 180))} 
+        y2={50 + 45 * Math.sin((i * 45) * (Math.PI / 180))} 
+        stroke="currentColor" 
+        strokeWidth="3" 
+      />
+    ))}
+    <circle cx="50" cy="50" r="4" fill="currentColor" />
+  </svg>
+);
 
 // Custom Palna (Cradle) Icon Component
 const PalnaIcon = () => (
@@ -35,6 +55,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
   // Translations
   const t = {
+    greeting: isMarathi ? "नमो बुद्धाय" : "Namo Buddhay",
     host: isMarathi ? "दाभाडे व शिंपी परिवार" : "The Dabhade & Shimpi Family",
     invites: isMarathi ? "आपणास सस्नेह निमंत्रित करीत आहेत" : "Cordially invites",
     ceremony: isMarathi ? "च्या नामकरण सोहळ्यासाठी" : "To the Naamkaran Ceremony of",
@@ -53,15 +74,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     bless: isMarathi ? "आशीर्वाद" : "Bless",
     addCal: isMarathi ? "जतन करा" : "Add"
   };
-
-  const wishes = [
-    "Best wishes from the Patil Family! 🌸",
-    "Blessings to the little prince! - Sharma Family ✨",
-    "Lots of love to Baby Dabhade ❤️",
-    "Congratulations to the proud parents! 🎉",
-    "May God bless the little one with health and happiness 🙏",
-    "Can't wait to see the baby! - Anjali & Rahul"
-  ];
 
   useEffect(() => {
     const targetDate = new Date('2026-02-15T12:30:00').getTime();
@@ -119,13 +131,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     e.stopPropagation();
     const newHeart: FlyingHeart = {
       id: Date.now(),
-      x: Math.random() * 40 - 20, // Random X scatter
-      color: ['#ef4444', '#ec4899', '#f43f5e', '#e11d48'][Math.floor(Math.random() * 4)], // Red/Pink variants
-      scale: 0.8 + Math.random() * 0.5 // Random size
+      x: Math.random() * 40 - 20, 
+      color: ['#ef4444', '#ec4899', '#f43f5e', '#e11d48'][Math.floor(Math.random() * 4)], 
+      scale: 0.8 + Math.random() * 0.5 
     };
     setHearts(prev => [...prev, newHeart]);
-    
-    // Auto remove heart after animation
     setTimeout(() => {
         setHearts(prev => prev.filter(h => h.id !== newHeart.id));
     }, 2000);
@@ -134,11 +144,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col">
         
-        {/* INNER WRAPPER */}
-        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-12 pt-16">
+        {/* INNER WRAPPER - Adjusted padding (pb-8) since Marquee is gone */}
+        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-16">
 
             {/* LANGUAGE BUTTON */}
-            <div className="w-full flex justify-end mb-4 px-1 relative z-50">
+            <div className="w-full flex justify-end mb-2 px-1 relative z-50">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
                     className="flex items-center gap-2 bg-[#fffcf5] text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95 hover:bg-amber-50"
@@ -150,6 +160,13 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
             {/* CONTENT */}
             <motion.div className="space-y-1 text-center" initial="hidden" animate={showDetails ? "visible" : "hidden"}>
+                
+                {/* BUDDHIST HEADER */}
+                <motion.div variants={fadeVariants} className="flex flex-col items-center mb-2">
+                    <DhammaChakraIcon />
+                    <span className="text-amber-800 font-bold uppercase tracking-widest text-xs md:text-sm">{t.greeting}</span>
+                </motion.div>
+
                 <motion.h3 variants={fadeVariants} className={`text-amber-600 tracking-[0.2em] uppercase font-bold ${isMarathi ? 'text-xs font-serif' : 'text-sm md:text-base'}`}>
                     {t.host}
                 </motion.h3>
@@ -282,9 +299,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
-                {/* ORIGINAL BLESSING BUTTON (Hidden/Replaced by Heart logic or keep both?) 
-                    Keeping it as requested for "Shower Blessings" feature.
-                */}
                 <button onClick={handleBlessing}
                     className="w-9 h-9 flex items-center justify-center bg-rose-100 text-rose-600 border border-rose-200 rounded-full shadow-sm hover:scale-110 active:scale-95 transition-transform"
                     title="Shower Blessings">
@@ -304,39 +318,9 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <ChevronsDown size={16} />
             </motion.div>
 
-             {/* WISHES WALL (MARQUEE) */}
-             <motion.div 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: showDetails ? 1 : 0 }} 
-                transition={{ delay: 3.5 }}
-                className="mt-6 border-t border-amber-100 pt-2 relative overflow-hidden"
-             >
-                <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-[#fffcf5] to-transparent z-10"></div>
-                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#fffcf5] to-transparent z-10"></div>
-                
-                <div className="flex whitespace-nowrap overflow-hidden">
-                    <motion.div 
-                        className="flex gap-8 text-[10px] text-amber-700/70 italic font-serif"
-                        animate={{ x: ["0%", "-50%"] }}
-                        transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-                    >
-                        {[...wishes, ...wishes].map((wish, i) => (
-                            <span key={i} className="flex items-center gap-2">
-                                <span className="w-1 h-1 bg-amber-300 rounded-full"></span>
-                                {wish}
-                            </span>
-                        ))}
-                    </motion.div>
-                </div>
-            </motion.div>
-
         </div>
 
-        {/* ---------------------------------------------------- */}
-        {/* FLOATING HEART REACTION BUTTON & ANIMATION CONTAINER */}
-        {/* ---------------------------------------------------- */}
-        
-        {/* The Button */}
+        {/* FLOATING HEART REACTION BUTTON */}
         <div className="absolute bottom-20 right-4 z-[100]">
              <button 
                 onClick={triggerHeart}
@@ -346,7 +330,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
              </button>
         </div>
 
-        {/* The Hearts Container (Pointer events none so clicks pass through) */}
+        {/* HEARTS CONTAINER */}
         <div className="absolute bottom-24 right-4 w-12 h-[300px] pointer-events-none z-[90] overflow-visible">
             <AnimatePresence>
                 {hearts.map((heart) => (
