@@ -140,7 +140,8 @@ function App() {
 
       <audio ref={audioRef} loop src="/bg-music.mp3" />
 
-      <button onClick={toggleMusic} className="absolute top-6 right-6 z-[100] text-amber-200/50 hover:text-amber-100 transition-colors">
+      {/* FIXED: Moved Sound Button to TOP LEFT to avoid Scroll Roller */}
+      <button onClick={toggleMusic} className="absolute top-6 left-6 z-[100] text-amber-200/50 hover:text-amber-100 transition-colors">
         {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
       </button>
 
