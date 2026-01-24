@@ -9,7 +9,7 @@ interface MapModalProps {
 
 export const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
   // Venue: SukhSundar Bhavan, Nagpur
-  const mapUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.296538779698!2d79.1176233!3d21.1405797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4c753d069695d%3A0x629535080927940b!2sSukh%20Sunder%20Bhavan!5e0!3m2!1sen!2sin!4v1709664567890!5m2!1sen!2sin";
+  const mapUrl = "https://www.google.com/maps/embed?pb=!4v1769138732429!6m8!1m7!1sscbP-OEbbs_NkOlFPeZJsw!2m2!1d21.17920448906362!2d79.0408888480574!3f142.13213096517654!4f-10.202816796089408!5f0.4000000000000002";
 
   return (
     <AnimatePresence>
@@ -66,7 +66,7 @@ export const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
                 <p className="text-xs text-slate-500">Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur</p>
                 
                 <button 
-                    onClick={() => window.open("https://maps.app.goo.gl/YourActualGoogleMapsLinkHere", "_blank")}
+                    onClick={() => window.open("https://maps.app.goo.gl/ZvrYzRP9M9BX6Yot5", "_blank")}
                     className="mt-3 w-full bg-amber-100 text-amber-800 py-2 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-amber-200 transition-colors"
                 >
                     Open in Google Maps App
