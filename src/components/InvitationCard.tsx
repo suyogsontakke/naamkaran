@@ -27,7 +27,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     timeLabel: isMarathi ? "वेळ" : "Time",
     timeValue: isMarathi ? "दुपारी १२:३० वाजता" : "12:30 PM Onwards",
     venueLabel: isMarathi ? "स्थळ" : "Venue",
-    venueValue: isMarathi ? "सुखसुंदर भवन, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" : "SukhSundar Bhavan, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur",
+    venueValue: isMarathi ? "सुखसुंदर भवन, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" : "SukhSundar Bhavan, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर",
     scroll: isMarathi ? "खाली पहा" : "Scroll Down",
     photos: isMarathi ? "फोटो" : "Photos",
     download: isMarathi ? "डाउनलोड" : "Download",
@@ -90,15 +90,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   return (
     <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col">
         
-        {/* INNER WRAPPER */}
-        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto">
-
-            {/* TOP DECORATIONS */}
-            <div className="absolute top-2 left-0 w-12 h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-amber-400 rounded-tl-3xl opacity-60 pointer-events-none"></div>
-            <div className="absolute top-2 right-0 w-12 h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-amber-400 rounded-tr-3xl opacity-60 pointer-events-none"></div>
+        {/* INNER WRAPPER 
+            Added 'pt-12' (padding-top) here to push ALL content down from the start.
+            This fixes the overlapping top issue and naturally fills the bottom space.
+        */}
+        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-4 pt-12">
 
             {/* LANGUAGE BUTTON */}
-            <div className="w-full flex justify-end mt-6 mb-2 px-1 relative z-50">
+            <div className="w-full flex justify-end mb-2 px-1 relative z-50">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
                     className="flex items-center gap-2 bg-[#fffcf5] text-amber-900 border border-amber-900/10 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-sm transition-all active:scale-95 hover:bg-amber-50"
@@ -197,7 +196,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* FIXED: Added onClick to open map */}
+                {/* Fixed Map Link */}
                 <motion.div 
                     variants={itemVariants} 
                     className="flex items-center gap-3 text-left cursor-pointer hover:bg-amber-50 p-1 -mx-1 rounded-lg transition-colors group relative"
@@ -246,12 +245,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
                 <ChevronsDown size={16} />
             </motion.div>
-
-            {/* BOTTOM DECORATIONS */}
-            <div className="flex justify-between w-full mt-2">
-                <div className="w-12 h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-amber-400 rounded-bl-3xl opacity-60 pointer-events-none"></div>
-                <div className="w-12 h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-amber-400 rounded-br-3xl opacity-60 pointer-events-none"></div>
-            </div>
 
         </div>
     </div>
