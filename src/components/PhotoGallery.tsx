@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Image as ImageIcon } from 'lucide-react';
+import { X, Image as ImageIcon, ZoomIn } from 'lucide-react';
 
 interface PhotoGalleryProps {
   isOpen: boolean;
@@ -8,14 +8,16 @@ interface PhotoGalleryProps {
 }
 
 export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ isOpen, onClose }) => {
-  // 6 Placeholders for the "Square 6 boxes" look
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
+  // 6 Photos Grid
   const photos = [
-    "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1566737236500-c8ac43014a67?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1609252925148-b0f1b515e111?auto=format&fit=crop&w=500&q=80",
-    "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?auto=format&fit=crop&w=500&q=80"
+    "image 1",
+    "image 2",
+    "image 3",
+    "image 4",
+    "image 5",
+    "image 7"
   ];
 
   return (
@@ -23,6 +25,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ isOpen, onClose }) =
       {isOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center px-4">
           
+          {/* Backdrop (Closes Gallery) */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -31,6 +34,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ isOpen, onClose }) =
             className="absolute inset-0 bg-indigo-950/90 backdrop-blur-md"
           />
 
+          {/* Main Gallery Modal */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -48,7 +52,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ isOpen, onClose }) =
                 </button>
             </div>
 
-            {/* GRID: 2 Columns, Square Aspect Ratio */}
+            {/* GRID: 2 Columns */}
             <div className="p-3 overflow-y-auto custom-scrollbar bg-slate-100">
                 <div className="grid grid-cols-2 gap-2">
                     {photos.map((src, index) => (
@@ -57,18 +61,54 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({ isOpen, onClose }) =
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: index * 0.05 }}
-                            className="aspect-square bg-white p-1 rounded-lg shadow-sm border border-slate-200"
+                            onClick={() => setSelectedPhoto(src)}
+                            className="aspect-square bg-white p-1 rounded-lg shadow-sm border border-slate-200 cursor-pointer relative group overflow-hidden"
                         >
                             <img 
                                 src={src} 
                                 alt={`Baby ${index}`} 
-                                className="w-full h-full object-cover rounded-md"
+                                className="w-full h-full object-cover rounded-md group-hover:scale-110 transition-transform duration-500"
                             />
+                            {/* Zoom Icon Overlay */}
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-md">
+                                <ZoomIn className="text-white drop-shadow-md" size={24} />
+                            </div>
                         </motion.div>
                     ))}
                 </div>
             </div>
           </motion.div>
+
+          {/* FULL SCREEN LIGHTBOX (The "Big Photo" View) */}
+          <AnimatePresence>
+            {selectedPhoto && (
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[300] bg-black/95 flex items-center justify-center p-4 backdrop-blur-xl"
+                    onClick={() => setSelectedPhoto(null)}
+                >
+                    <button 
+                        className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 p-2 rounded-full"
+                        onClick={() => setSelectedPhoto(null)}
+                    >
+                        <X size={24} />
+                    </button>
+                    
+                    <motion.img 
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.8, opacity: 0 }}
+                        src={selectedPhoto} 
+                        alt="Full Size View" 
+                        className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl border-2 border-white/20"
+                        onClick={(e) => e.stopPropagation()} // Prevent clicking image from closing it
+                    />
+                </motion.div>
+            )}
+          </AnimatePresence>
+
         </div>
       )}
     </AnimatePresence>
