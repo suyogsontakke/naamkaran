@@ -79,10 +79,12 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
-            className="absolute z-[60] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
+            // FIXED: Increased Z-Index to 200 so it sits ON TOP of the rollers (which are 100)
+            className="absolute z-[200] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
             exit={{ opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
             transition={{ duration: 0.8 }}
           >
+            {/* Wax Seal */}
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center relative shadow-2xl"
                   style={{ background: 'radial-gradient(circle at 35% 35%, #2563eb, #1e40af, #172554)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
                 <div className="absolute inset-0 rounded-full border-[2px] border-white/20 opacity-60"></div>
@@ -90,6 +92,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
                     <span className="font-bold text-3xl md:text-4xl text-blue-100 drop-shadow-md">☸️</span>
                 </div>
             </div>
+            
             <p className="mt-4 text-amber-100 text-xs font-bold tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-amber-500/30">
                 OPENING...
             </p>
