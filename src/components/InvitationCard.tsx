@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, PartyPopper, Globe, ZoomIn, X } from 'lucide-react'; // Changed Flower2 to PartyPopper
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, PartyPopper, Globe, Quote } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
@@ -24,7 +24,6 @@ const DhammaChakraIcon = () => (
 const PanchsheelToran = () => {
   const colors = ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C']; 
   return (
-    // FIXED: Changed -mt-1 to mt-4 to push the flag down so it's visible
     <div className="absolute top-0 left-0 w-full flex justify-center mt-4 z-0 overflow-hidden opacity-90 pointer-events-none">
        <div className="absolute top-0 w-full h-[3px] bg-amber-700"></div>
        <div className="flex gap-1">
@@ -37,12 +36,31 @@ const PanchsheelToran = () => {
   );
 };
 
+// FEATURE #3: RANDOM BUDDHIST QUOTES
+const BUDDHA_QUOTES = [
+    "Peace comes from within. Do not seek it without.",
+    "Three things cannot be long hidden: the sun, the moon, and the truth.",
+    "Health is the greatest gift, contentment the greatest wealth.",
+    "No one saves us but ourselves. We ourselves must walk the path.",
+    "Purity or impurity depends on oneself, no one can purify another."
+];
+
 export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpenGallery, onOpenMap, showDetails = true, onBlessing }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  
   const [hasScrolled, setHasScrolled] = useState(false);
+  
+  // NEW STATES
+  const [quote, setQuote] = useState("");
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Placeholder images for the slider (You can use your gallery images here)
+  const sliderImages = [
+    "/gallery/1.jpg", 
+    "/gallery/2.jpg", 
+    "/gallery/3.jpg"
+  ];
 
   const t = {
     greeting: isMarathi ? "नमो बुद्धाय" : "Namo Buddhay",
@@ -61,11 +79,20 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     photos: isMarathi ? "फोटो" : "Photos",
     download: isMarathi ? "डाउनलोड" : "Download",
     map: isMarathi ? "नकाशा पहा" : "View Map",
-    bless: isMarathi ? "शुभेच्छा वर्षाव" : "Shower Love", // Updated text for confetti
-    addCal: isMarathi ? "जतन करा" : "Add"
+    bless: isMarathi ? "शुभेच्छा वर्षाव" : "Shower Love",
+    addCal: isMarathi ? "जतन करा" : "Add",
+    journey: isMarathi ? "बाळाचा प्रवास" : "Journey So Far"
   };
 
   useEffect(() => {
+    // Set random quote
+    setQuote(BUDDHA_QUOTES[Math.floor(Math.random() * BUDDHA_QUOTES.length)]);
+
+    // Slider Timer
+    const sliderTimer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 3000); // Change slide every 3 seconds
+
     const targetDate = new Date('2026-02-15T12:30:00').getTime();
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -80,7 +107,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
         });
       }
     }, 1000);
-    return () => clearInterval(interval);
+
+    return () => {
+        clearInterval(interval);
+        clearInterval(sliderTimer);
+    };
   }, []);
 
   const addToCalendarUrl = () => {
@@ -240,6 +271,30 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                         <p className={`text-xs md:text-sm font-semibold text-slate-800 ${isMarathi ? 'font-serif' : ''}`}>{t.timeValue}</p>
                     </div>
                 </motion.div>
+
+                {/* FEATURE #2: JOURNEY SO FAR SLIDER */}
+                <motion.div variants={itemVariants} className="py-2 border-b border-amber-100 mb-2">
+                    <p className={`text-[10px] text-slate-500 uppercase font-bold mb-2 ${isMarathi ? 'font-serif' : ''}`}>{t.journey}</p>
+                    <div className="w-full aspect-[16/9] bg-slate-100 rounded-lg overflow-hidden relative shadow-inner border border-amber-200">
+                        <AnimatePresence mode="wait">
+                            <motion.img 
+                                key={currentSlide}
+                                src={sliderImages[currentSlide]}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.8 }}
+                                className="absolute inset-0 w-full h-full object-cover"
+                            />
+                        </AnimatePresence>
+                        {/* Dots */}
+                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
+                            {sliderImages.map((_, i) => (
+                                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentSlide ? 'bg-white' : 'bg-white/50'}`}></div>
+                            ))}
+                        </div>
+                    </div>
+                </motion.div>
                 
                 <motion.div 
                     variants={itemVariants} 
@@ -263,7 +318,23 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.div>
             </motion.div>
 
-            <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
+            {/* FEATURE #3: DAILY QUOTE */}
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showDetails ? 1 : 0 }}
+                transition={{ delay: 2.5 }}
+                className="mt-4 mb-4 px-4 text-center"
+            >
+                <div className="flex justify-center mb-1 text-amber-300 opacity-60">
+                    <Quote size={16} className="fill-current" />
+                </div>
+                <p className="text-[10px] md:text-xs text-slate-500 font-serif italic leading-relaxed">
+                    "{quote}"
+                </p>
+                <div className="w-8 h-[1px] bg-amber-200 mx-auto mt-2"></div>
+            </motion.div>
+
+            <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-2"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
                 <button onClick={(e) => { e.stopPropagation(); onOpenGallery(); }}
@@ -271,7 +342,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
-                {/* UPDATED BUTTON: Confetti Popper Icon */}
                 <button onClick={handleBlessing}
                     className="w-10 h-10 flex items-center justify-center bg-amber-100 text-amber-600 border border-amber-300 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform"
                     title={t.bless}>
