@@ -30,25 +30,32 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
     };
   }, [onOpenComplete]);
 
-  // SCROLL ROLLER
+  // RESTORED: ROYAL 3D ROLLER WITH KNOBS (Best Version)
   const ScrollRoller = ({ position }: { position: 'top' | 'bottom' }) => (
     <div 
       className={`absolute left-1/2 -translate-x-1/2 w-[105%] max-w-[400px] h-14 md:h-16 z-[100] flex items-center justify-center
-        ${position === 'top' ? '-top-7 md:-top-8' : '-bottom-7 md:-bottom-8'}
+        ${position === 'top' ? '-top-6 md:-top-8' : '-bottom-6 md:-bottom-8'}
       `}
     >
-      <div className="absolute left-0 h-full w-8 bg-[#4a3728] rounded-l-md border-r border-[#8B4513] shadow-inner z-10"></div>
-
-      <div className="w-[95%] h-full relative"
+      {/* Main Roller Body */}
+      <div className="w-full h-full rounded-full relative overflow-hidden shadow-xl"
            style={{
-             background: 'linear-gradient(180deg, #DAA520 0%, #FFD700 20%, #FFF8DC 45%, #FFD700 55%, #B8860B 100%)',
-             borderRadius: '4px',
-             boxShadow: '0 4px 10px rgba(0,0,0,0.5)'
+             background: 'linear-gradient(90deg, #8B4513 0%, #B8860B 15%, #FFD700 50%, #B8860B 85%, #8B4513 100%)', // Premium 3D Gold
+             boxShadow: '0 10px 20px rgba(0,0,0,0.5)'
            }}>
-          <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-white/50 blur-[1px]"></div>
+          {/* Metallic Shine */}
+          <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-white/50 blur-[2px]"></div>
+          
+          {/* Texture Lines */}
+          <div className="absolute top-0 bottom-0 left-10 border-r border-[#8B4513]/20"></div>
+          <div className="absolute top-0 bottom-0 right-10 border-l border-[#8B4513]/20"></div>
       </div>
 
-      <div className="absolute right-0 h-full w-8 bg-[#4a3728] rounded-r-md border-l border-[#8B4513] shadow-inner z-10"></div>
+      {/* Left Knob (The "Handle") */}
+      <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-10 md:h-12 bg-[#5d3211] rounded-l-md shadow-inner border-r border-[#DAA520]"></div>
+      
+      {/* Right Knob (The "Handle") */}
+      <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-10 md:h-12 bg-[#5d3211] rounded-r-md shadow-inner border-l border-[#DAA520]"></div>
     </div>
   );
 
@@ -84,13 +91,13 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
-            // FIXED: Changed 'top-1/2' to 'top-0' to pin it to the scroll seam.
-            // Added explicit x/y to initial and exit to lock position.
+            // FIXED SEAL POSITION (Pinned to top-0)
             className="absolute z-[200] top-0 left-1/2 flex flex-col items-center justify-center pointer-events-none"
             initial={{ x: "-50%", y: "-50%", opacity: 1 }}
             exit={{ x: "-50%", y: "-50%", opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
             transition={{ duration: 0.8 }}
           >
+            {/* Wax Seal */}
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center relative shadow-2xl"
                   style={{ background: 'radial-gradient(circle at 35% 35%, #2563eb, #1e40af, #172554)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
                 <div className="absolute inset-0 rounded-full border-[2px] border-white/20 opacity-60"></div>
@@ -98,6 +105,7 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
                     <span className="font-bold text-3xl md:text-4xl text-blue-100 drop-shadow-md">☸️</span>
                 </div>
             </div>
+            
             <p className="mt-4 text-amber-100 text-xs font-bold tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-amber-500/30">
                 OPENING...
             </p>
