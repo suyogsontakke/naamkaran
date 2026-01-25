@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe, ZoomIn, X } from 'lucide-react';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, PartyPopper, Globe, ZoomIn, X } from 'lucide-react'; // Changed Flower2 to PartyPopper
 
 interface InvitationCardProps {
   guestName: string;
@@ -24,7 +24,8 @@ const DhammaChakraIcon = () => (
 const PanchsheelToran = () => {
   const colors = ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C']; 
   return (
-    <div className="absolute top-0 left-0 w-full flex justify-center -mt-1 z-0 overflow-hidden opacity-90 pointer-events-none">
+    // FIXED: Changed -mt-1 to mt-4 to push the flag down so it's visible
+    <div className="absolute top-0 left-0 w-full flex justify-center mt-4 z-0 overflow-hidden opacity-90 pointer-events-none">
        <div className="absolute top-0 w-full h-[3px] bg-amber-700"></div>
        <div className="flex gap-1">
          {[...Array(15)].map((_, i) => (
@@ -60,7 +61,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     photos: isMarathi ? "फोटो" : "Photos",
     download: isMarathi ? "डाउनलोड" : "Download",
     map: isMarathi ? "नकाशा पहा" : "View Map",
-    bless: isMarathi ? "आशीर्वाद" : "Bless",
+    bless: isMarathi ? "शुभेच्छा वर्षाव" : "Shower Love", // Updated text for confetti
     addCal: isMarathi ? "जतन करा" : "Add"
   };
 
@@ -128,7 +129,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
         className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[8px] border-double border-amber-200/50"
     >
         
-        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-16">
+        <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-20">
 
             <PanchsheelToran />
 
@@ -173,7 +174,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     {t.ceremony}
                 </motion.p>
                 
-                {/* BABY TITLE - FIXED MARATHI CUT-OFF */}
+                {/* BABY TITLE */}
                 <motion.div 
                     className="relative perspective-[500px] py-1 cursor-pointer" 
                     variants={babyTitleVariants} 
@@ -184,8 +185,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <h1 
                         className={`font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-800 tracking-wide 
                         ${isMarathi 
-                            ? 'text-3xl md:text-5xl font-serif leading-relaxed py-2'  // FIX: Increased line-height & padding for Marathi
-                            : "text-4xl md:text-6xl font-['Cinzel'] leading-none"     // Standard tight fit for English
+                            ? 'text-3xl md:text-5xl font-serif leading-relaxed py-2'
+                            : "text-4xl md:text-6xl font-['Cinzel'] leading-none"
                         }`}
                         style={{ filter: 'drop-shadow(0 2px 0px rgba(251, 191, 36, 0.4))' }}>
                         {t.babyTitle}
@@ -270,10 +271,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     <ImageIcon size={12} /> {t.photos}
                 </button>
 
+                {/* UPDATED BUTTON: Confetti Popper Icon */}
                 <button onClick={handleBlessing}
-                    className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-600 border border-rose-300 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform"
-                    title="Shower Blessings">
-                    <Flower2 size={18} />
+                    className="w-10 h-10 flex items-center justify-center bg-amber-100 text-amber-600 border border-amber-300 rounded-full shadow-md hover:scale-110 active:scale-95 transition-transform"
+                    title={t.bless}>
+                    <PartyPopper size={18} />
                 </button>
 
                 <button onClick={handleDownload} disabled={isDownloading}
