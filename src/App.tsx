@@ -1,13 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Envelope3D } from './components/Envelope3D';
 import { MapModal } from './components/MapModal';
 import { PhotoGallery } from './components/PhotoGallery'; 
-import { Volume2, VolumeX, PartyPopper } from 'lucide-react'; // Changed Flower2 to PartyPopper
+import { Volume2, VolumeX, Flower2 } from 'lucide-react';
 
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
-  const landingImage = "/gallery/buddha.jpg"; 
+  const landingImage = "/buddha.jpg"; 
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-evenly p-6 text-center perspective-[1000px]">
@@ -88,32 +88,48 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   );
 };
 
-// NEW: Realistic Confetti Animation
+// --- ROBUST CONFETTI ENGINE ---
 const ConfettiShower = () => {
-    const colors = ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C']; // Buddhist colors
+    // We generate the particles ONCE when the component mounts
+    const [particles] = useState(() => 
+        Array.from({ length: 70 }).map((_, i) => ({
+            id: i,
+            x: Math.random() * 100, // % width
+            y: -10, // Start just above screen
+            color: ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C'][i % 5],
+            size: Math.random() * 8 + 6,
+            rotation: Math.random() * 360,
+            drift: Math.random() * 100 - 50, // Drift left or right
+            duration: 2.5 + Math.random() * 2,
+            delay: Math.random() * 0.5
+        }))
+    );
+
     return (
-        <div className="fixed inset-0 pointer-events-none z-[9999]">
-            {[...Array(50)].map((_, i) => {
-                const size = Math.random() * 8 + 4;
-                return (
+        <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+            {particles.map((p) => (
                 <motion.div
-                    key={i}
-                    initial={{ y: -50, x: Math.random() * window.innerWidth, opacity: 1, rotateX: 0, rotateY: 0 }}
+                    key={p.id}
+                    initial={{ y: -50, x: `${p.x}vw`, opacity: 1, rotate: p.rotation }}
                     animate={{ 
-                        y: window.innerHeight + 100, 
-                        rotateX: Math.random() * 360 * 4, // Multiple spins
-                        rotateY: Math.random() * 360 * 4,
-                        x: `+=${Math.random() * 200 - 100}` // Drift left/right
+                        y: '120vh', 
+                        x: `calc(${p.x}vw + ${p.drift}px)`,
+                        rotate: p.rotation + 720, // Spin twice
+                        opacity: 0 
                     }}
-                    transition={{ duration: 2.5 + Math.random() * 2, ease: "easeOut" }}
+                    transition={{ 
+                        duration: p.duration, 
+                        ease: "linear",
+                        delay: p.delay 
+                    }}
                     className="absolute rounded-sm shadow-sm"
                     style={{
-                        backgroundColor: colors[i % colors.length],
-                        width: size,
-                        height: size * (Math.random() > 0.5 ? 1.5 : 0.6), // Rectangles and squares
+                        backgroundColor: p.color,
+                        width: p.size,
+                        height: p.size * 0.7, // Rectangular confetti
                     }}
                 />
-            )})}
+            ))}
         </div>
     );
 };
@@ -124,7 +140,11 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false); 
-  const [showConfetti, setShowConfetti] = useState(false); // Renamed state
+  
+  // Confetti State
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiKey, setConfettiKey] = useState(0); // Key to force re-render on spam click
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleNameSubmit = (name: string) => {
@@ -143,10 +163,13 @@ function App() {
     }
   };
 
-  // Trigger Confetti
+  // Trigger Confetti (Resets timer if clicked again)
   const handleConfetti = () => {
+      setConfettiKey(prev => prev + 1); // Change key to force fresh animation
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 4000);
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => setShowConfetti(false), 5000);
   };
 
   return (
@@ -176,9 +199,9 @@ function App() {
       <MapModal isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} />
       <PhotoGallery isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
       
-      {/* Confetti Effect */}
-      <AnimatePresence>
-        {showConfetti && <ConfettiShower />}
+      {/* Confetti Effect - Uses key to restart animation on every click */}
+      <AnimatePresence mode="popLayout">
+        {showConfetti && <ConfettiShower key={confettiKey} />}
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
