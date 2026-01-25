@@ -36,7 +36,6 @@ const PanchsheelToran = () => {
   );
 };
 
-// FEATURE #3: RANDOM BUDDHIST QUOTES
 const BUDDHA_QUOTES = [
     "Peace comes from within. Do not seek it without.",
     "Three things cannot be long hidden: the sun, the moon, and the truth.",
@@ -50,17 +49,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [hasScrolled, setHasScrolled] = useState(false);
-  
-  // NEW STATES
   const [quote, setQuote] = useState("");
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  // Placeholder images for the slider (You can use your gallery images here)
-  const sliderImages = [
-    "/gallery/1.jpg", 
-    "/gallery/2.jpg", 
-    "/gallery/3.jpg"
-  ];
 
   const t = {
     greeting: isMarathi ? "नमो बुद्धाय" : "Namo Buddhay",
@@ -70,7 +59,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     babyTitle: isMarathi ? "चि. बाळाचे" : "Baby Boy",
     parents: isMarathi ? "(श्री. व सौ. दाभाडे यांचा सुपुत्र)" : "(Son of Mr. & Mrs. Dabhade)",
     dateLabel: isMarathi ? "दिनांक" : "Date",
-    dateValue: isMarathi ? "रविवार, १५ फेब्रुवारी २०२६" : "Sun, Feb 15th, 2026",
+    // UPDATED DATE: 8th Feb
+    dateValue: isMarathi ? "रविवार, ०८ फेब्रुवारी २०२६" : "Sun, Feb 8th, 2026",
     timeLabel: isMarathi ? "वेळ" : "Time",
     timeValue: isMarathi ? "दुपारी १२:३० वाजता" : "12:30 PM Onwards",
     venueLabel: isMarathi ? "स्थळ" : "Venue",
@@ -80,20 +70,14 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     download: isMarathi ? "डाउनलोड" : "Download",
     map: isMarathi ? "नकाशा पहा" : "View Map",
     bless: isMarathi ? "शुभेच्छा वर्षाव" : "Shower Love",
-    addCal: isMarathi ? "जतन करा" : "Add",
-    journey: isMarathi ? "बाळाचा प्रवास" : "Journey So Far"
+    addCal: isMarathi ? "जतन करा" : "Add"
   };
 
   useEffect(() => {
-    // Set random quote
     setQuote(BUDDHA_QUOTES[Math.floor(Math.random() * BUDDHA_QUOTES.length)]);
 
-    // Slider Timer
-    const sliderTimer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 3000); // Change slide every 3 seconds
-
-    const targetDate = new Date('2026-02-15T12:30:00').getTime();
+    // UPDATED TIMER TARGET: 2026-02-08
+    const targetDate = new Date('2026-02-08T12:30:00').getTime();
     const interval = setInterval(() => {
       const now = new Date().getTime();
       const distance = targetDate - now;
@@ -108,17 +92,15 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
       }
     }, 1000);
 
-    return () => {
-        clearInterval(interval);
-        clearInterval(sliderTimer);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const addToCalendarUrl = () => {
     const title = encodeURIComponent("Naamkaran Ceremony - Baby Boy Dabhade");
     const location = encodeURIComponent("SukhSundar Bhavan, Nagpur");
-    const startDate = "20260215T070000Z"; 
-    const endDate = "20260215T100000Z"; 
+    // UPDATED CALENDAR LINK DATE: 20260208
+    const startDate = "20260208T070000Z"; 
+    const endDate = "20260208T100000Z"; 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&dates=${startDate}/${endDate}`;
   };
 
@@ -271,30 +253,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                         <p className={`text-xs md:text-sm font-semibold text-slate-800 ${isMarathi ? 'font-serif' : ''}`}>{t.timeValue}</p>
                     </div>
                 </motion.div>
-
-                {/* FEATURE #2: JOURNEY SO FAR SLIDER */}
-                <motion.div variants={itemVariants} className="py-2 border-b border-amber-100 mb-2">
-                    <p className={`text-[10px] text-slate-500 uppercase font-bold mb-2 ${isMarathi ? 'font-serif' : ''}`}>{t.journey}</p>
-                    <div className="w-full aspect-[16/9] bg-slate-100 rounded-lg overflow-hidden relative shadow-inner border border-amber-200">
-                        <AnimatePresence mode="wait">
-                            <motion.img 
-                                key={currentSlide}
-                                src={sliderImages[currentSlide]}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.8 }}
-                                className="absolute inset-0 w-full h-full object-cover"
-                            />
-                        </AnimatePresence>
-                        {/* Dots */}
-                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
-                            {sliderImages.map((_, i) => (
-                                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentSlide ? 'bg-white' : 'bg-white/50'}`}></div>
-                            ))}
-                        </div>
-                    </div>
-                </motion.div>
                 
                 <motion.div 
                     variants={itemVariants} 
@@ -318,7 +276,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.div>
             </motion.div>
 
-            {/* FEATURE #3: DAILY QUOTE */}
+            {/* DAILY QUOTE */}
             <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: showDetails ? 1 : 0 }}
