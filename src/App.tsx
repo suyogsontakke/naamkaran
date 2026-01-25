@@ -3,17 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Envelope3D } from './components/Envelope3D';
 import { MapModal } from './components/MapModal';
 import { PhotoGallery } from './components/PhotoGallery'; 
-import { Volume2, VolumeX, Flower2 } from 'lucide-react';
+import { Volume2, VolumeX, PartyPopper } from 'lucide-react'; // Changed Flower2 to PartyPopper
 
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
   const landingImage = "/gallery/buddha.jpg"; 
 
   return (
-    // Changed to h-full and justify-evenly to spread content without scrolling
     <div className="h-full w-full flex flex-col items-center justify-evenly p-6 text-center perspective-[1000px]">
         
-        {/* 3D PHOTO - Responsive Height (Max 35% of screen) */}
+        {/* 3D PHOTO */}
         <motion.div 
             initial={{ opacity: 0, scale: 0.5, rotateX: 20 }} 
             animate={{ 
@@ -89,20 +88,32 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   );
 };
 
-const PetalShower = () => {
+// NEW: Realistic Confetti Animation
+const ConfettiShower = () => {
+    const colors = ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C']; // Buddhist colors
     return (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
-            {[...Array(15)].map((_, i) => (
+            {[...Array(50)].map((_, i) => {
+                const size = Math.random() * 8 + 4;
+                return (
                 <motion.div
                     key={i}
-                    initial={{ y: -50, x: Math.random() * window.innerWidth, opacity: 1, rotate: 0 }}
-                    animate={{ y: window.innerHeight + 100, rotate: 360 }}
-                    transition={{ duration: 3 + Math.random() * 2, ease: "linear" }}
-                    className="absolute text-rose-400/80"
-                >
-                    <Flower2 size={20 + Math.random() * 20} />
-                </motion.div>
-            ))}
+                    initial={{ y: -50, x: Math.random() * window.innerWidth, opacity: 1, rotateX: 0, rotateY: 0 }}
+                    animate={{ 
+                        y: window.innerHeight + 100, 
+                        rotateX: Math.random() * 360 * 4, // Multiple spins
+                        rotateY: Math.random() * 360 * 4,
+                        x: `+=${Math.random() * 200 - 100}` // Drift left/right
+                    }}
+                    transition={{ duration: 2.5 + Math.random() * 2, ease: "easeOut" }}
+                    className="absolute rounded-sm shadow-sm"
+                    style={{
+                        backgroundColor: colors[i % colors.length],
+                        width: size,
+                        height: size * (Math.random() > 0.5 ? 1.5 : 0.6), // Rectangles and squares
+                    }}
+                />
+            )})}
         </div>
     );
 };
@@ -113,7 +124,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false); 
-  const [showPetals, setShowPetals] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false); // Renamed state
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleNameSubmit = (name: string) => {
@@ -132,13 +143,13 @@ function App() {
     }
   };
 
-  const handleBlessing = () => {
-      setShowPetals(true);
-      setTimeout(() => setShowPetals(false), 4000);
+  // Trigger Confetti
+  const handleConfetti = () => {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 4000);
   };
 
   return (
-    // FIXED: h-[100dvh] ensures it fits mobile screens perfectly without scroll
     <div className="h-[100dvh] w-full bg-gradient-to-b from-[#020617] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative">
       
       <div className="absolute inset-0 opacity-40 pointer-events-none">
@@ -165,8 +176,9 @@ function App() {
       <MapModal isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} />
       <PhotoGallery isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
       
+      {/* Confetti Effect */}
       <AnimatePresence>
-        {showPetals && <PetalShower />}
+        {showConfetti && <ConfettiShower />}
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
@@ -180,7 +192,7 @@ function App() {
               guestName={guestName} 
               onOpenGallery={() => setIsGalleryOpen(true)} 
               onOpenMap={() => setIsMapOpen(true)} 
-              onBlessing={handleBlessing}
+              onBlessing={handleConfetti} // Connected to new handler
             />
           </motion.div>
         )}
