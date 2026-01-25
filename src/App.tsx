@@ -5,7 +5,7 @@ import { MapModal } from './components/MapModal';
 import { PhotoGallery } from './components/PhotoGallery'; 
 import { Volume2, VolumeX, Flower2 } from 'lucide-react';
 
-// Landing Screen with 3D PHOTO
+// Landing Screen with BIGGER 3D PHOTO
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
   
@@ -15,14 +15,14 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   return (
     <div className="flex flex-col items-center z-10 p-6 text-center space-y-6 max-w-md w-full perspective-[1000px]">
         
-        {/* 3D FLOATING PHOTO - NO BORDER, JUST IMAGE */}
+        {/* 3D FLOATING PHOTO - MADE BIGGER */}
         <motion.div 
             initial={{ opacity: 0, scale: 0.5, rotateX: 20 }} 
             animate={{ 
                 opacity: 1, 
                 scale: 1, 
                 rotateX: 0,
-                y: [0, -15, 0] // Gentle floating idle animation
+                y: [0, -15, 0] 
             }} 
             transition={{ 
                 duration: 0.8, 
@@ -34,30 +34,28 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
                 }
             }}
             whileHover={{ 
-                scale: 1.15, 
+                scale: 1.1, // Slightly less scale on hover since it's already big
                 rotateX: 10, 
                 rotateY: -10,
-                filter: "drop-shadow(0 25px 25px rgba(251, 191, 36, 0.4))", // Golden Glow Shadow
+                filter: "drop-shadow(0 30px 30px rgba(251, 191, 36, 0.5))",
                 cursor: "pointer"
             }}
-            // Removed rounded-full and borders. Just size and 3D positioning.
-            className="w-64 h-64 relative z-20 flex items-center justify-center transform-style-3d"
+            // CHANGED SIZE: w-64 h-64 -> w-80 h-80 (Significantly bigger)
+            className="w-80 h-80 relative z-20 flex items-center justify-center transform-style-3d"
         >
             <img 
               src={landingImage} 
               alt="Welcome" 
               className="w-full h-full object-contain drop-shadow-2xl"
-              style={{ filter: "drop-shadow(0 10px 10px rgba(0,0,0,0.5))" }}
+              style={{ filter: "drop-shadow(0 15px 15px rgba(0,0,0,0.6))" }}
               onError={(e) => {
-                // Fallback: If image fails, show Chakra
                 (e.target as HTMLImageElement).style.display = 'none';
                 (e.target as HTMLImageElement).parentElement!.classList.add('bg-indigo-950/60', 'backdrop-blur-md', 'rounded-full', 'border-2', 'border-amber-400/50');
                 (e.target as HTMLImageElement).parentElement!.querySelector('.fallback-text')?.classList.remove('hidden');
               }}
             />
             
-            {/* Fallback Icon (Only shows if image is missing) */}
-            <span className="hidden fallback-text text-6xl absolute inset-0 flex items-center justify-center text-amber-300">☸️</span>
+            <span className="hidden fallback-text text-7xl absolute inset-0 flex items-center justify-center text-amber-300">☸️</span>
         </motion.div>
 
         {/* NAMO BUDDHAY */}
