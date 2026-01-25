@@ -30,7 +30,7 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
             NAMO BUDDHAY
         </motion.h1>
 
-        {/* THE RESTORED MESSAGE */}
+        {/* MESSAGE */}
         <motion.div
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
@@ -70,7 +70,7 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   );
 };
 
-// Flower Animation Component
+// Flower Animation
 const PetalShower = () => {
     return (
         <div className="fixed inset-0 pointer-events-none z-[9999]">
@@ -120,7 +120,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-[#020617] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative">
+    // Added 'pt-12' to create space at the top for the button, preventing overlap
+    <div className="min-h-screen w-full bg-gradient-to-b from-[#020617] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative pt-12">
       
       {/* Dynamic Background */}
       <div className="absolute inset-0 opacity-40 pointer-events-none">
@@ -140,8 +141,11 @@ function App() {
 
       <audio ref={audioRef} loop src="/bg-music.mp3" />
 
-      {/* FIXED: Moved Sound Button to TOP LEFT to avoid Scroll Roller */}
-      <button onClick={toggleMusic} className="absolute top-6 left-6 z-[100] text-amber-200/50 hover:text-amber-100 transition-colors">
+      {/* FIXED: Sound Button at Top Left with high Z-index */}
+      <button 
+        onClick={toggleMusic} 
+        className="absolute top-4 left-4 z-[200] text-amber-200/50 hover:text-amber-100 transition-colors bg-black/20 p-2 rounded-full backdrop-blur-sm"
+      >
         {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
       </button>
 
@@ -160,8 +164,7 @@ function App() {
             <LandingScreen onEnter={handleNameSubmit} />
           </motion.div>
         ) : (
-          <motion.div key="envelope" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex justify-center z-10">
-            {/* PASSING DOWN ALL FUNCTIONS */}
+          <motion.div key="envelope" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full flex justify-center z-10 pb-6">
             <Envelope3D 
               guestName={guestName} 
               onOpenGallery={() => setIsGalleryOpen(true)} 
