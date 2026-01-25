@@ -118,17 +118,33 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const guestNameVariants: Variants = { hidden: { opacity: 0, scale: 0.6, filter: "blur(8px)" }, visible: { opacity: 1, scale: 1, filter: "blur(0px)", transition: { delay: 1.6, duration: 0.8, type: "spring", stiffness: 100, damping: 10 } } };
   const fadeVariants: Variants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 1, delay: 0.2 } } };
 
-  const handleDownload = (e: React.MouseEvent) => {
+  const handleDownload = async (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsDownloading(true);
-    const imagePath = '/invite.png'; 
-    const link = document.createElement('a');
-    link.href = imagePath;
-    link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-')}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => setIsDownloading(false), 1000);
+    
+    // The file you placed in the public folder
+    const imagePath = '/invite.jpg'; 
+
+    try {
+        const response = await fetch(imagePath);
+        if (!response.ok) throw new Error("File not found");
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        // This names the file "Naamkaran-Invitation-GuestName.png"
+        link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-') || 'Guest'}.png`; 
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error("Download failed:", error);
+        alert("Invitation image not found! Please add 'invite.png' to the public folder.");
+    } finally {
+        setTimeout(() => setIsDownloading(false), 1000);
+    }
   };
 
   const handleBlessing = (e: React.MouseEvent) => {
