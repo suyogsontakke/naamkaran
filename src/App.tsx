@@ -5,7 +5,7 @@ import { MapModal } from './components/MapModal';
 import { PhotoGallery } from './components/PhotoGallery'; 
 import { Volume2, VolumeX, Flower2 } from 'lucide-react';
 
-// Landing Screen with BIGGER PHOTO (No Border)
+// Landing Screen with 3D PHOTO
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
   
@@ -13,24 +13,45 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const landingImage = "/gallery/buddha.jpg"; 
 
   return (
-    <div className="flex flex-col items-center z-10 p-6 text-center space-y-6 max-w-md w-full">
+    <div className="flex flex-col items-center z-10 p-6 text-center space-y-6 max-w-md w-full perspective-[1000px]">
         
-        {/* BIG PHOTO - NO BORDER */}
+        {/* 3D FLOATING PHOTO - NO BORDER, JUST IMAGE */}
         <motion.div 
-            initial={{ opacity: 0, scale: 0.5 }} 
-            animate={{ opacity: 1, scale: 1 }} 
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            // Changed w-32 -> w-56 (Bigger) and removed border/bg classes
-            className="w-56 h-56 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden relative"
+            initial={{ opacity: 0, scale: 0.5, rotateX: 20 }} 
+            animate={{ 
+                opacity: 1, 
+                scale: 1, 
+                rotateX: 0,
+                y: [0, -15, 0] // Gentle floating idle animation
+            }} 
+            transition={{ 
+                duration: 0.8, 
+                ease: "easeOut",
+                y: {
+                    repeat: Infinity,
+                    duration: 4,
+                    ease: "easeInOut"
+                }
+            }}
+            whileHover={{ 
+                scale: 1.15, 
+                rotateX: 10, 
+                rotateY: -10,
+                filter: "drop-shadow(0 25px 25px rgba(251, 191, 36, 0.4))", // Golden Glow Shadow
+                cursor: "pointer"
+            }}
+            // Removed rounded-full and borders. Just size and 3D positioning.
+            className="w-64 h-64 relative z-20 flex items-center justify-center transform-style-3d"
         >
             <img 
               src={landingImage} 
               alt="Welcome" 
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              className="w-full h-full object-contain drop-shadow-2xl"
+              style={{ filter: "drop-shadow(0 10px 10px rgba(0,0,0,0.5))" }}
               onError={(e) => {
                 // Fallback: If image fails, show Chakra
                 (e.target as HTMLImageElement).style.display = 'none';
-                (e.target as HTMLImageElement).parentElement!.classList.add('bg-indigo-950/60', 'backdrop-blur-md', 'border-2', 'border-amber-400/50');
+                (e.target as HTMLImageElement).parentElement!.classList.add('bg-indigo-950/60', 'backdrop-blur-md', 'rounded-full', 'border-2', 'border-amber-400/50');
                 (e.target as HTMLImageElement).parentElement!.querySelector('.fallback-text')?.classList.remove('hidden');
               }}
             />
@@ -41,8 +62,8 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
 
         {/* NAMO BUDDHAY */}
         <motion.h1 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
             transition={{ delay: 0.3 }}
             className="text-4xl md:text-5xl font-['Cinzel'] text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 tracking-widest font-bold drop-shadow-sm"
         >
@@ -139,7 +160,6 @@ function App() {
   };
 
   return (
-    // Added 'pt-12' to create space at the top
     <div className="min-h-screen w-full bg-gradient-to-b from-[#020617] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative pt-12">
       
       {/* Dynamic Background */}
