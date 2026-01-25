@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe } from 'lucide-react';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, Flower2, Globe, ZoomIn, X } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
@@ -132,7 +132,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
             <PanchsheelToran />
 
-            {/* FIXED: Removed z-index to allow scrolling under top roller */}
+            {/* Language Toggle */}
             <div className="w-full flex justify-end mb-2 px-1 relative">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
@@ -173,6 +173,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     {t.ceremony}
                 </motion.p>
                 
+                {/* BABY TITLE - FIXED MARATHI CUT-OFF */}
                 <motion.div 
                     className="relative perspective-[500px] py-1 cursor-pointer" 
                     variants={babyTitleVariants} 
@@ -180,7 +181,12 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     animate={showDetails ? "visible" : "hidden"}
                     whileHover={{ scale: 1.1, rotateX: 10, rotateY: -10 }}
                 >
-                    <h1 className={`font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-800 leading-none tracking-wide ${isMarathi ? 'text-3xl md:text-5xl font-serif' : "text-4xl md:text-6xl font-['Cinzel']"}`}
+                    <h1 
+                        className={`font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-800 tracking-wide 
+                        ${isMarathi 
+                            ? 'text-3xl md:text-5xl font-serif leading-relaxed py-2'  // FIX: Increased line-height & padding for Marathi
+                            : "text-4xl md:text-6xl font-['Cinzel'] leading-none"     // Standard tight fit for English
+                        }`}
                         style={{ filter: 'drop-shadow(0 2px 0px rgba(251, 191, 36, 0.4))' }}>
                         {t.babyTitle}
                     </h1>
