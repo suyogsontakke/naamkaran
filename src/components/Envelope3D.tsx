@@ -30,28 +30,25 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
     };
   }, [onOpenComplete]);
 
-  // NEW REALISTIC GOLDEN ROLLER DESIGN
+  // SCROLL ROLLER
   const ScrollRoller = ({ position }: { position: 'top' | 'bottom' }) => (
     <div 
-      className={`absolute left-1/2 -translate-x-1/2 w-[102%] max-w-[390px] h-14 md:h-18 z-[100] flex items-center justify-center
-        ${position === 'top' ? '-top-7 md:-top-9' : '-bottom-7 md:-bottom-9'}
+      className={`absolute left-1/2 -translate-x-1/2 w-[105%] max-w-[400px] h-14 md:h-16 z-[100] flex items-center justify-center
+        ${position === 'top' ? '-top-7 md:-top-8' : '-bottom-7 md:-bottom-8'}
       `}
     >
-      {/* Main Roller Body */}
-      <div className="w-full h-full rounded-full relative overflow-hidden"
+      <div className="absolute left-0 h-full w-8 bg-[#4a3728] rounded-l-md border-r border-[#8B4513] shadow-inner z-10"></div>
+
+      <div className="w-[95%] h-full relative"
            style={{
-             background: 'linear-gradient(180deg, #DAA520 0%, #FFD700 40%, #FDB931 50%, #FFD700 60%, #B8860B 100%)', // Richer Gold Gradient
-             boxShadow: '0px 5px 15px rgba(0,0,0,0.5), inset 0px 2px 5px rgba(255,255,255,0.4), inset 0px -2px 5px rgba(0,0,0,0.3)'
+             background: 'linear-gradient(180deg, #DAA520 0%, #FFD700 20%, #FFF8DC 45%, #FFD700 55%, #B8860B 100%)',
+             borderRadius: '4px',
+             boxShadow: '0 4px 10px rgba(0,0,0,0.5)'
            }}>
-          {/* Shine Line */}
-          <div className="absolute top-1/2 -translate-y-1/2 w-full h-[3px] bg-white/60 blur-[2px]"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-white/50 blur-[1px]"></div>
       </div>
 
-      {/* Left Knob (More defined) */}
-      <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-5 h-10 md:h-14 bg-[#8B4513] rounded-l-lg shadow-[inset_-2px_0_5px_rgba(0,0,0,0.5)] border-r-2 border-[#DAA520]"></div>
-      
-      {/* Right Knob (More defined) */}
-      <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-10 md:h-14 bg-[#8B4513] rounded-r-lg shadow-[inset_2px_0_5px_rgba(0,0,0,0.5)] border-l-2 border-[#DAA520]"></div>
+      <div className="absolute right-0 h-full w-8 bg-[#4a3728] rounded-r-md border-l border-[#8B4513] shadow-inner z-10"></div>
     </div>
   );
 
@@ -87,8 +84,11 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
-            className="absolute z-[200] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
-            exit={{ opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
+            // FIXED: Changed 'top-1/2' to 'top-0' to pin it to the scroll seam.
+            // Added explicit x/y to initial and exit to lock position.
+            className="absolute z-[200] top-0 left-1/2 flex flex-col items-center justify-center pointer-events-none"
+            initial={{ x: "-50%", y: "-50%", opacity: 1 }}
+            exit={{ x: "-50%", y: "-50%", opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
             transition={{ duration: 0.8 }}
           >
             <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center relative shadow-2xl"
