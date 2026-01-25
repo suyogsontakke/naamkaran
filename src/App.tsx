@@ -5,19 +5,38 @@ import { MapModal } from './components/MapModal';
 import { PhotoGallery } from './components/PhotoGallery'; 
 import { Volume2, VolumeX, Flower2 } from 'lucide-react';
 
-// Landing Screen with Rich Typography
+// Landing Screen with BIGGER PHOTO (No Border)
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
+  
+  // Make sure 'landing-photo.jpg' is in your public folder!
+  const landingImage = "/gallery/buddha.jpg"; 
+
   return (
     <div className="flex flex-col items-center z-10 p-6 text-center space-y-6 max-w-md w-full">
-        {/* Animated Dhamma Chakra Logo */}
+        
+        {/* BIG PHOTO - NO BORDER */}
         <motion.div 
-            initial={{ opacity: 0, y: -20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 1 }}
-            className="w-24 h-24 rounded-full border-2 border-amber-400/50 flex items-center justify-center bg-indigo-950/60 backdrop-blur-md shadow-[0_0_40px_rgba(251,191,36,0.3)]"
+            initial={{ opacity: 0, scale: 0.5 }} 
+            animate={{ opacity: 1, scale: 1 }} 
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            // Changed w-32 -> w-56 (Bigger) and removed border/bg classes
+            className="w-56 h-56 rounded-full shadow-[0_10px_40px_rgba(0,0,0,0.5)] overflow-hidden relative"
         >
-            <span className="text-5xl drop-shadow-[0_0_10px_rgba(255,215,0,0.5)]">☸️</span>
+            <img 
+              src={landingImage} 
+              alt="Welcome" 
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+              onError={(e) => {
+                // Fallback: If image fails, show Chakra
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).parentElement!.classList.add('bg-indigo-950/60', 'backdrop-blur-md', 'border-2', 'border-amber-400/50');
+                (e.target as HTMLImageElement).parentElement!.querySelector('.fallback-text')?.classList.remove('hidden');
+              }}
+            />
+            
+            {/* Fallback Icon (Only shows if image is missing) */}
+            <span className="hidden fallback-text text-6xl absolute inset-0 flex items-center justify-center text-amber-300">☸️</span>
         </motion.div>
 
         {/* NAMO BUDDHAY */}
@@ -120,7 +139,7 @@ function App() {
   };
 
   return (
-    // Added 'pt-12' to create space at the top for the button, preventing overlap
+    // Added 'pt-12' to create space at the top
     <div className="min-h-screen w-full bg-gradient-to-b from-[#020617] via-[#1e1b4b] to-[#172554] flex flex-col items-center justify-center overflow-hidden relative pt-12">
       
       {/* Dynamic Background */}
@@ -141,7 +160,7 @@ function App() {
 
       <audio ref={audioRef} loop src="/bg-music.mp3" />
 
-      {/* FIXED: Sound Button at Top Left with high Z-index */}
+      {/* Sound Button Top Left */}
       <button 
         onClick={toggleMusic} 
         className="absolute top-4 left-4 z-[200] text-amber-200/50 hover:text-amber-100 transition-colors bg-black/20 p-2 rounded-full backdrop-blur-sm"
