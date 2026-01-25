@@ -41,7 +41,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   
-  // State to handle Scroll Indicator visibility
   const [hasScrolled, setHasScrolled] = useState(false);
 
   const t = {
@@ -133,7 +132,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
             <PanchsheelToran />
 
-            <div className="w-full flex justify-end mb-2 px-1 relative z-50">
+            {/* FIXED: Removed z-index to allow scrolling under top roller */}
+            <div className="w-full flex justify-end mb-2 px-1 relative">
                 <button 
                     onClick={() => setIsMarathi(!isMarathi)}
                     className="flex items-center gap-2 bg-white/80 backdrop-blur-sm text-blue-900 border border-amber-300 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-md transition-all active:scale-95 hover:bg-amber-50"
@@ -234,7 +234,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     </div>
                 </motion.div>
                 
-                {/* FIXED VENUE CARD: Clean layout with Blue Button */}
                 <motion.div 
                     variants={itemVariants} 
                     className="flex items-center justify-between cursor-pointer p-2 -mx-1.5 rounded-lg transition-colors bg-white border border-transparent hover:border-blue-200 hover:shadow-sm"
@@ -251,7 +250,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                         </div>
                     </div>
                     
-                    {/* The Blue View Map Button (No yellow bg) */}
                     <div className="ml-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-1.5 rounded shadow-sm flex items-center gap-1 hover:bg-blue-700">
                         {t.map} <ExternalLink size={8} />
                     </div>
@@ -280,7 +278,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
         </div>
 
-        {/* FLOATING SCROLL INDICATOR (VISIBLE IMMEDIATELY) */}
         <AnimatePresence>
             {!hasScrolled && showDetails && (
                 <motion.div 
