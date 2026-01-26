@@ -7,7 +7,7 @@ import { Volume2, VolumeX, Flower2 } from 'lucide-react';
 
 const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   const [name, setName] = useState('');
-  const landingImage = "/buddha.jpg"; 
+  const landingImage = "/landing-photo.jpg"; 
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-evenly p-6 text-center perspective-[1000px]">
@@ -88,18 +88,17 @@ const LandingScreen = ({ onEnter }: { onEnter: (name: string) => void }) => {
   );
 };
 
-// --- ROBUST CONFETTI ENGINE ---
+// CONFETTI ENGINE
 const ConfettiShower = () => {
-    // We generate the particles ONCE when the component mounts
     const [particles] = useState(() => 
         Array.from({ length: 70 }).map((_, i) => ({
             id: i,
-            x: Math.random() * 100, // % width
-            y: -10, // Start just above screen
+            x: Math.random() * 100, 
+            y: -10, 
             color: ['#0033A0', '#FFD700', '#DC2626', '#FFFFFF', '#EA580C'][i % 5],
             size: Math.random() * 8 + 6,
             rotation: Math.random() * 360,
-            drift: Math.random() * 100 - 50, // Drift left or right
+            drift: Math.random() * 100 - 50,
             duration: 2.5 + Math.random() * 2,
             delay: Math.random() * 0.5
         }))
@@ -114,7 +113,7 @@ const ConfettiShower = () => {
                     animate={{ 
                         y: '120vh', 
                         x: `calc(${p.x}vw + ${p.drift}px)`,
-                        rotate: p.rotation + 720, // Spin twice
+                        rotate: p.rotation + 720,
                         opacity: 0 
                     }}
                     transition={{ 
@@ -126,7 +125,7 @@ const ConfettiShower = () => {
                     style={{
                         backgroundColor: p.color,
                         width: p.size,
-                        height: p.size * 0.7, // Rectangular confetti
+                        height: p.size * 0.7,
                     }}
                 />
             ))}
@@ -141,34 +140,38 @@ function App() {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false); 
   
-  // Confetti State
   const [showConfetti, setShowConfetti] = useState(false);
-  const [confettiKey, setConfettiKey] = useState(0); // Key to force re-render on spam click
+  const [confettiKey, setConfettiKey] = useState(0); 
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleNameSubmit = (name: string) => {
     setGuestName(name);
     setStep('envelope');
-    if (audioRef.current && !isPlaying) {
-        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
+    
+    // FIXED AUDIO PLAYBACK LOGIC
+    if (audioRef.current) {
+        audioRef.current.volume = 0.5; // Set volume to 50%
+        audioRef.current.play()
+            .then(() => setIsPlaying(true))
+            .catch((error) => console.log("Audio Play Failed (User interaction required or file missing):", error));
     }
   };
 
   const toggleMusic = () => {
     if (audioRef.current) {
-      if (isPlaying) audioRef.current.pause();
-      else audioRef.current.play();
-      setIsPlaying(!isPlaying);
+      if (isPlaying) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+      } else {
+          audioRef.current.play().then(() => setIsPlaying(true)).catch(e => console.log(e));
+      }
     }
   };
 
-  // Trigger Confetti (Resets timer if clicked again)
   const handleConfetti = () => {
-      setConfettiKey(prev => prev + 1); // Change key to force fresh animation
+      setConfettiKey(prev => prev + 1); 
       setShowConfetti(true);
-      
-      // Auto hide after 5 seconds
       setTimeout(() => setShowConfetti(false), 5000);
   };
 
@@ -190,7 +193,8 @@ function App() {
           ))}
       </div>
 
-      <audio ref={audioRef} loop src="/bg-music.mp3" />
+      {/* Make sure bg-music.mp3 is in the public folder */}
+      <audio ref={audioRef} loop src="/song.mp3" />
 
       <button onClick={toggleMusic} className="absolute top-4 left-4 z-[200] text-amber-200/50 hover:text-amber-100 transition-colors bg-black/20 p-2 rounded-full backdrop-blur-sm">
         {isPlaying ? <Volume2 size={24} /> : <VolumeX size={24} />}
@@ -199,7 +203,6 @@ function App() {
       <MapModal isOpen={isMapOpen} onClose={() => setIsMapOpen(false)} />
       <PhotoGallery isOpen={isGalleryOpen} onClose={() => setIsGalleryOpen(false)} />
       
-      {/* Confetti Effect - Uses key to restart animation on every click */}
       <AnimatePresence mode="popLayout">
         {showConfetti && <ConfettiShower key={confettiKey} />}
       </AnimatePresence>
@@ -215,7 +218,7 @@ function App() {
               guestName={guestName} 
               onOpenGallery={() => setIsGalleryOpen(true)} 
               onOpenMap={() => setIsMapOpen(true)} 
-              onBlessing={handleConfetti} // Connected to new handler
+              onBlessing={handleConfetti} 
             />
           </motion.div>
         )}
