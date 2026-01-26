@@ -59,7 +59,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     babyTitle: isMarathi ? "चि. बाळाचे" : "Baby Boy",
     parents: isMarathi ? "(श्री. व सौ. दाभाडे यांचा सुपुत्र)" : "(Son of Mr. & Mrs. Dabhade)",
     dateLabel: isMarathi ? "दिनांक" : "Date",
-    // UPDATED DATE: 8th Feb
     dateValue: isMarathi ? "रविवार, ०८ फेब्रुवारी २०२६" : "Sun, Feb 8th, 2026",
     timeLabel: isMarathi ? "वेळ" : "Time",
     timeValue: isMarathi ? "दुपारी १२:३० वाजता" : "12:30 PM Onwards",
@@ -76,7 +75,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   useEffect(() => {
     setQuote(BUDDHA_QUOTES[Math.floor(Math.random() * BUDDHA_QUOTES.length)]);
 
-    // UPDATED TIMER TARGET: 2026-02-08
     const targetDate = new Date('2026-02-08T12:30:00').getTime();
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -98,7 +96,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const addToCalendarUrl = () => {
     const title = encodeURIComponent("Naamkaran Ceremony - Baby Boy Dabhade");
     const location = encodeURIComponent("SukhSundar Bhavan, Nagpur");
-    // UPDATED CALENDAR LINK DATE: 20260208
     const startDate = "20260208T070000Z"; 
     const endDate = "20260208T100000Z"; 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&dates=${startDate}/${endDate}`;
@@ -118,33 +115,17 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const guestNameVariants: Variants = { hidden: { opacity: 0, scale: 0.6, filter: "blur(8px)" }, visible: { opacity: 1, scale: 1, filter: "blur(0px)", transition: { delay: 1.6, duration: 0.8, type: "spring", stiffness: 100, damping: 10 } } };
   const fadeVariants: Variants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 1, delay: 0.2 } } };
 
-  const handleDownload = async (e: React.MouseEvent) => {
+  const handleDownload = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsDownloading(true);
-    
-    // The file you placed in the public folder
-    const imagePath = '/invite.jpg'; 
-
-    try {
-        const response = await fetch(imagePath);
-        if (!response.ok) throw new Error("File not found");
-        
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        // This names the file "Naamkaran-Invitation-GuestName.png"
-        link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-') || 'Guest'}.png`; 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-    } catch (error) {
-        console.error("Download failed:", error);
-        alert("Invitation image not found! Please add 'invite.png' to the public folder.");
-    } finally {
-        setTimeout(() => setIsDownloading(false), 1000);
-    }
+    const imagePath = '/invite.png'; 
+    const link = document.createElement('a');
+    link.href = imagePath;
+    link.download = `Naamkaran-Invitation-${guestName.replace(/\s+/g, '-')}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => setIsDownloading(false), 1000);
   };
 
   const handleBlessing = (e: React.MouseEvent) => {
@@ -336,7 +317,8 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
-                    className="fixed bottom-12 left-0 right-0 z-50 flex flex-col items-center justify-center pointer-events-none"
+                    // FIXED: Changed bottom-12 to bottom-32 to clear the roller
+                    className="fixed bottom-32 left-0 right-0 z-50 flex flex-col items-center justify-center pointer-events-none"
                 >
                     <div className="bg-amber-900/80 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg border border-amber-500/30 flex flex-col items-center">
                         <span className="text-[9px] uppercase tracking-widest font-bold text-amber-100 mb-0.5">{t.scroll}</span>
