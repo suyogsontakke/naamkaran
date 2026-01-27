@@ -62,7 +62,7 @@ export const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
 
             {/* Footer / Address */}
             <div className="p-4 bg-white text-center">
-                <p className="text-indigo-900 font-bold text-sm mb-1">SukhSundar Bhavan</p>
+                <p className="text-indigo-900 font-bold text-sm mb-1">Shuddhodhan Sontakke's Residence</p>
                 <p className="text-xs text-slate-500">Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur</p>
                 
                 <button 
