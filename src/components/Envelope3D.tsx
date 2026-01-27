@@ -10,6 +10,42 @@ interface Envelope3DProps {
   onBlessing?: () => void;
 }
 
+// 1. NEW COMPONENT: Premium Golden Rotating Chakra
+const GoldenChakraSVG = () => (
+  <svg viewBox="0 0 100 100" className="w-full h-full animate-[spin_8s_linear_infinite] drop-shadow-md">
+    <defs>
+      <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FDB931" />
+        <stop offset="30%" stopColor="#FFD700" />
+        <stop offset="70%" stopColor="#B8860B" />
+        <stop offset="100%" stopColor="#FDB931" />
+      </linearGradient>
+    </defs>
+    
+    {/* Outer Ring */}
+    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#goldGradient)" strokeWidth="4" />
+    
+    {/* Inner Ring */}
+    <circle cx="50" cy="50" r="8" fill="none" stroke="url(#goldGradient)" strokeWidth="3" />
+    
+    {/* 24 Spokes (Ashoka Chakra Style) */}
+    {[...Array(24)].map((_, i) => (
+      <line 
+        key={i} 
+        x1="50" y1="50" 
+        x2={50 + 45 * Math.cos((i * 15) * (Math.PI / 180))} 
+        y2={50 + 45 * Math.sin((i * 15) * (Math.PI / 180))} 
+        stroke="url(#goldGradient)" 
+        strokeWidth="2" 
+        strokeLinecap="round"
+      />
+    ))}
+    
+    {/* Center Dot */}
+    <circle cx="50" cy="50" r="3" fill="url(#goldGradient)" />
+  </svg>
+);
+
 export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery, onOpenMap, onOpenComplete, onBlessing }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -30,31 +66,24 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
     };
   }, [onOpenComplete]);
 
-  // RESTORED: ROYAL 3D ROLLER WITH KNOBS (Best Version)
+  // ROYAL 3D ROLLER
   const ScrollRoller = ({ position }: { position: 'top' | 'bottom' }) => (
     <div 
       className={`absolute left-1/2 -translate-x-1/2 w-[105%] max-w-[400px] h-14 md:h-16 z-[100] flex items-center justify-center
         ${position === 'top' ? '-top-6 md:-top-8' : '-bottom-6 md:-bottom-8'}
       `}
     >
-      {/* Main Roller Body */}
       <div className="w-full h-full rounded-full relative overflow-hidden shadow-xl"
            style={{
-             background: 'linear-gradient(90deg, #8B4513 0%, #B8860B 15%, #FFD700 50%, #B8860B 85%, #8B4513 100%)', // Premium 3D Gold
+             background: 'linear-gradient(90deg, #8B4513 0%, #B8860B 15%, #FFD700 50%, #B8860B 85%, #8B4513 100%)',
              boxShadow: '0 10px 20px rgba(0,0,0,0.5)'
            }}>
-          {/* Metallic Shine */}
           <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-white/50 blur-[2px]"></div>
-          
-          {/* Texture Lines */}
           <div className="absolute top-0 bottom-0 left-10 border-r border-[#8B4513]/20"></div>
           <div className="absolute top-0 bottom-0 right-10 border-l border-[#8B4513]/20"></div>
       </div>
 
-      {/* Left Knob (The "Handle") */}
       <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-10 md:h-12 bg-[#5d3211] rounded-l-md shadow-inner border-r border-[#DAA520]"></div>
-      
-      {/* Right Knob (The "Handle") */}
       <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-10 md:h-12 bg-[#5d3211] rounded-r-md shadow-inner border-l border-[#DAA520]"></div>
     </div>
   );
@@ -91,22 +120,25 @@ export const Envelope3D: React.FC<Envelope3DProps> = ({ guestName, onOpenGallery
       <AnimatePresence>
         {!isOpen && (
           <motion.div 
-            // FIXED SEAL POSITION (Pinned to top-0)
             className="absolute z-[200] top-0 left-1/2 flex flex-col items-center justify-center pointer-events-none"
             initial={{ x: "-50%", y: "-50%", opacity: 1 }}
             exit={{ x: "-50%", y: "-50%", opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
             transition={{ duration: 0.8 }}
           >
-            {/* Wax Seal */}
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center relative shadow-2xl"
-                  style={{ background: 'radial-gradient(circle at 35% 35%, #2563eb, #1e40af, #172554)', boxShadow: '0 4px 15px rgba(0,0,0,0.6)' }}>
-                <div className="absolute inset-0 rounded-full border-[2px] border-white/20 opacity-60"></div>
-                <div className="w-12 h-12 rounded-full border border-blue-200/30 flex items-center justify-center">
-                    <span className="font-bold text-3xl md:text-4xl text-blue-100 drop-shadow-md">☸️</span>
+            {/* 2. REPLACED EMOJI WITH GOLDEN CHAKRA */}
+            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center relative shadow-[0_10px_30px_rgba(0,0,0,0.8)] border-4 border-[#DAA520]"
+                  style={{ background: 'radial-gradient(circle at 30% 30%, #1e3a8a, #0f172a)' }}>
+                
+                {/* Inner Glow */}
+                <div className="absolute inset-0 rounded-full bg-blue-500/10 blur-sm"></div>
+
+                {/* The Golden Rotating Chakra */}
+                <div className="w-14 h-14 md:w-16 md:h-16">
+                    <GoldenChakraSVG />
                 </div>
             </div>
             
-            <p className="mt-4 text-amber-100 text-xs font-bold tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-amber-500/30">
+            <p className="mt-4 text-[#FFD700] text-[10px] font-serif font-bold tracking-[0.2em] bg-black/60 px-4 py-1.5 rounded-full backdrop-blur-md border border-[#DAA520]/50 shadow-lg">
                 OPENING...
             </p>
           </motion.div>
