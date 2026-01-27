@@ -64,7 +64,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     timeValue: isMarathi ? "दुपारी १२:३० वाजता" : "12:30 PM Onwards",
     venueLabel: isMarathi ? "स्थळ" : "Venue",
     venueValue: isMarathi 
-      ? "शुद्धोधन सोनटक्के निवास, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" 
+      ? "शुद्धोधन सोनटक्के यांच्या राहत्या घरी, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" 
       : "Shuddhodhan Sontakke's Residence, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur",
     scroll: isMarathi ? "खाली पहा" : "Scroll Down",
     photos: isMarathi ? "फोटो" : "Photos",
