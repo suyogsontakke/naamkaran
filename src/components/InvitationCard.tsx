@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, CalendarPlus, PartyPopper, Globe, Quote } from 'lucide-react';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, PartyPopper, Globe, Quote, Code2 } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
@@ -48,6 +48,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   const [isDownloading, setIsDownloading] = useState(false);
   const [isMarathi, setIsMarathi] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [hasScrolled, setHasScrolled] = useState(false);
   const [quote, setQuote] = useState("");
 
   const t = {
@@ -62,10 +63,10 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
     timeLabel: isMarathi ? "वेळ" : "Time",
     timeValue: isMarathi ? "दुपारी १२:३० वाजता" : "12:30 PM Onwards",
     venueLabel: isMarathi ? "स्थळ" : "Venue",
-    // UPDATED ADDRESS
     venueValue: isMarathi 
       ? "शुद्धोधन सोनटक्के निवास, प्लॉट नं. ७, वृंदावन कॉलनी, साई बाबा स्कूल जवळ, नागपूर" 
       : "Shuddhodhan Sontakke's Residence, Plot No. 7, Vrundavan Colony, Near Sai Baba School, Nagpur",
+    scroll: isMarathi ? "खाली पहा" : "Scroll Down",
     photos: isMarathi ? "फोटो" : "Photos",
     download: isMarathi ? "डाउनलोड" : "Download",
     map: isMarathi ? "नकाशा पहा" : "View Map",
@@ -96,10 +97,20 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
 
   const addToCalendarUrl = () => {
     const title = encodeURIComponent("Naamkaran Ceremony - Baby Boy Dabhade");
-    const location = encodeURIComponent("Shuddhodhan Sontakke's Residence, Nagpur");
+    // UPDATED LOCATION FOR CALENDAR
+    const location = encodeURIComponent("Shuddhodhan Sontakke's Residence, Plot No. 7, Vrundavan Colony, Nagpur");
     const startDate = "20260208T070000Z"; 
     const endDate = "20260208T100000Z"; 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&location=${location}&dates=${startDate}/${endDate}`;
+  };
+
+  // RESTORED: Logic to hide scroll arrow after scrolling down
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (e.currentTarget.scrollTop > 20) {
+        setHasScrolled(true);
+    } else {
+        setHasScrolled(false);
+    }
   };
 
   const containerVariants: Variants = { hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, staggerChildren: 0.2, delayChildren: 2.2 } } };
@@ -127,7 +138,10 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
   };
 
   return (
-    <div className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[8px] border-double border-amber-200/50">
+    <div 
+        onScroll={handleScroll}
+        className="w-full h-full bg-[#fffcf5] text-slate-800 overflow-y-auto custom-scrollbar relative flex flex-col border-[8px] border-double border-amber-200/50"
+    >
         
         <div className="relative flex-grow flex flex-col w-full max-w-[90%] mx-auto pb-8 pt-20">
 
@@ -298,6 +312,24 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </p>
                 <div className="w-8 h-[1px] bg-amber-200 mx-auto mt-2"></div>
             </motion.div>
+
+            {/* RESTORED SCROLL INDICATOR - POSITIONED HIGHER (bottom-28) */}
+            <AnimatePresence>
+                {!hasScrolled && showDetails && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        // Key Change: bottom-28 (112px from bottom) instead of bottom-12
+                        className="fixed bottom-28 left-0 right-0 z-50 flex flex-col items-center justify-center pointer-events-none"
+                    >
+                        <div className="bg-amber-900/80 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg border border-amber-500/30 flex flex-col items-center">
+                            <span className="text-[9px] uppercase tracking-widest font-bold text-amber-100 mb-0.5">{t.scroll}</span>
+                            <ChevronsDown size={16} className="text-amber-200 animate-bounce" />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* BRANDING FOOTER */}
             <motion.div 
