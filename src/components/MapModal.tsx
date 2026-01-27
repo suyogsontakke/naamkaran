@@ -8,8 +8,8 @@ interface MapModalProps {
 }
 
 export const MapModal: React.FC<MapModalProps> = ({ isOpen, onClose }) => {
-  // Venue: SukhSundar Bhavan, Nagpur
-  const mapUrl = "https://www.google.com/maps/embed?pb=!4v1769138732429!6m8!1m7!1sscbP-OEbbs_NkOlFPeZJsw!2m2!1d21.17920448906362!2d79.0408888480574!3f142.13213096517654!4f-10.202816796089408!5f0.4000000000000002";
+  // Venue: Shuddhodhan Sontakke's Residance, Nagpur
+  const mapUrl = "https://www.google.com/maps/embed?pb=!4v1769520935653!6m8!1m7!1sscbP-OEbbs_NkOlFPeZJsw!2m2!1d21.17920448906362!2d79.0408888480574!3f127.4347997019674!4f5.2141075404367!5f0.4000000000000002";
 
   return (
     <AnimatePresence>
