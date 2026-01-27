@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, PartyPopper, Globe, Quote } from 'lucide-react';
+import { Calendar, Clock, MapPin, Image as ImageIcon, ExternalLink, Download, Loader2, ChevronsDown, CalendarPlus, PartyPopper, Globe, Quote, Code2 } from 'lucide-react';
 
 interface InvitationCardProps {
   guestName: string;
@@ -273,23 +273,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </motion.div>
             </motion.div>
 
-            {/* DAILY QUOTE */}
-            <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: showDetails ? 1 : 0 }}
-                transition={{ delay: 2.5 }}
-                className="mt-4 mb-4 px-4 text-center"
-            >
-                <div className="flex justify-center mb-1 text-amber-300 opacity-60">
-                    <Quote size={16} className="fill-current" />
-                </div>
-                <p className="text-[10px] md:text-xs text-slate-500 font-serif italic leading-relaxed">
-                    "{quote}"
-                </p>
-                <div className="w-8 h-[1px] bg-amber-200 mx-auto mt-2"></div>
-            </motion.div>
-
-            <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-2"
+            <motion.div className="mt-auto flex gap-2 justify-center pb-2 relative z-50 items-center pt-4"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: showDetails ? 1 : 0, y: showDetails ? 0 : 10 }} transition={{ delay: 2.8 }}>
                 
                 <button onClick={(e) => { e.stopPropagation(); onOpenGallery(); }}
@@ -309,25 +293,44 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({ guestName, onOpe
                 </button>
             </motion.div>
 
+            {/* DAILY QUOTE */}
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showDetails ? 1 : 0 }}
+                transition={{ delay: 2.5 }}
+                className="mt-4 mb-4 px-4 text-center"
+            >
+                <div className="flex justify-center mb-1 text-amber-300 opacity-60">
+                    <Quote size={16} className="fill-current" />
+                </div>
+                <p className="text-[10px] md:text-xs text-slate-500 font-serif italic leading-relaxed">
+                    "{quote}"
+                </p>
+                <div className="w-8 h-[1px] bg-amber-200 mx-auto mt-2"></div>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1, y: [0, 5, 0] }} transition={{ delay: 3, duration: 1.5, repeat: Infinity }}
+                className="flex flex-col items-center justify-center text-amber-800/60 pb-2 z-0 pointer-events-none mt-2" data-hide-download>
+                <span className="text-[9px] uppercase tracking-widest font-bold bg-amber-50/80 px-3 py-0.5 rounded-full backdrop-blur-[2px] shadow-sm mb-0.5">{t.scroll}</span>
+                <ChevronsDown size={16} />
+            </motion.div>
+
+            {/* BRANDING FOOTER */}
+            <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: 1 }} 
+                transition={{ delay: 3.5 }}
+                className="w-full text-center mt-6 mb-2"
+            >
+                <p className="text-[9px] text-slate-400 font-mono tracking-wider opacity-60">
+                    DESIGNED & CODED BY
+                </p>
+                <p className="text-[10px] text-slate-600 font-bold font-serif tracking-widest uppercase">
+                    SUYOG SONTAKKE
+                </p>
+            </motion.div>
+
         </div>
-
-        <AnimatePresence>
-            {!hasScrolled && showDetails && (
-                <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    // FIXED: Changed bottom-12 to bottom-32 to clear the roller
-                    className="fixed bottom-32 left-0 right-0 z-50 flex flex-col items-center justify-center pointer-events-none"
-                >
-                    <div className="bg-amber-900/80 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-lg border border-amber-500/30 flex flex-col items-center">
-                        <span className="text-[9px] uppercase tracking-widest font-bold text-amber-100 mb-0.5">{t.scroll}</span>
-                        <ChevronsDown size={16} className="text-amber-200 animate-bounce" />
-                    </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-
     </div>
   );
 };
